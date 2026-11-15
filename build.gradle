@@ -143,7 +143,8 @@ tasks.register('generateEmberFrostResources') {
             writeJson("data/emberandfrost/tags/item/repairs_${s.id}.json", [replace:false, values:["emberandfrost:${s.ing}"]])
             writeJson("data/emberandfrost/loot_table/blocks/${s.ore}.json", oreLoot(s.ore, "raw_${s.id}"))
             writeJson("assets/emberandfrost/blockstates/${s.ore}.json", [variants:['':[model:"emberandfrost:block/${s.ore}"]]])
-            writeJson("assets/emberandfrost/models/block/${s.ore}.json", [parent:'minecraft:block/cube_all', textures:[all:"emberandfrost:block/${s.ore}"]])
+            def texture = s.id == 'magma' ? 'netherrack' : (s.id == 'cryolite' ? 'packed_ice' : (s.id == 'ashen' ? 'blackstone' : 'deepslate'))
+            writeJson("assets/emberandfrost/models/block/${s.ore}.json", [parent:'minecraft:block/cube_all', textures:[all:"minecraft:block/${texture}"]])
             writeJson("data/emberandfrost/tags/item/repairs_${s.id}.json", [replace:false, values:["emberandfrost:${s.ing}"]])
         }
         writeJson('data/emberandfrost/tags/item/repairs_armor.json', [replace:false, values:['emberandfrost:cinder_ingot','emberandfrost:cryolite_ingot','emberandfrost:ashen_ingot','emberandfrost:magma_ingot']])
