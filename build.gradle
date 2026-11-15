@@ -141,6 +141,9 @@ tasks.register('generateEmberFrostResources') {
             writeJson("data/emberandfrost/tags/item/repairs_${s.id}.json", [replace:false, values:["emberandfrost:${s.ing}"]])
         }
         writeJson('data/emberandfrost/tags/item/repairs_armor.json', [replace:false, values:['emberandfrost:cinder_ingot','emberandfrost:cryolite_ingot','emberandfrost:ashen_ingot','emberandfrost:magma_ingot']])
+        ['cinder_ingot','raw_cinder','cryolite_ingot','raw_cryolite','ashen_ingot','raw_ashen','magma_ingot','raw_magma','charolite_shard'].each { item ->
+            writeJson("assets/emberandfrost/items/${item}.json", [model:[type:'minecraft:model', model:"emberandfrost:item/${item}"]])
+        }
         ['cinder_ore','cryolite_ore','ashen_ore','magma_ore','charolite_ore'].each { ore ->
             writeJson("assets/emberandfrost/items/${ore}.json", [model:[type:'minecraft:model', model:"emberandfrost:block/${ore}"]])
         }
