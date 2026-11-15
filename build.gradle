@@ -291,6 +291,73 @@ tasks.register('generateEmberFrostResources') {
             ])
         }
 
+        // High-detail custom ore and material textures (overwrite the old placeholder art).
+        def richPalettes = [
+            cinder:[0xFFD9E0E8,0xFF9AA5B2,0xFF4B535E],
+            cryolite:[0xFF8DEBFF,0xFF36B9E5,0xFF17618F],
+            ashen:[0xFFC7A6FF,0xFF8054B8,0xFF38264F],
+            magma:[0xFFFFA04A,0xFFE34320,0xFF591B18],
+            charolite:[0xFFE9A8FF,0xFF9C42D6,0xFF40145F]
+        ]
+        def richTexture = { String path, String kind, List palette ->
+            def target = new File(root,path)
+            target.parentFile.mkdirs()
+            def img = new java.awt.image.BufferedImage(16,16,java.awt.image.BufferedImage.TYPE_INT_ARGB)
+            def put = { int x,int y,int col -> if(x>=0&&x<16&&y>=0&&y<16) img.setRGB(x,y,col) }
+            def seed = path.hashCode()
+            def noise = { int x,int y -> int n=x*374761393+y*668265263+seed; n=(n^(n>>13))*1274126177; (n^(n>>16))&0x7fffffff }
+            int hi=palette[0], mid=palette[1], lo=palette[2]
+            if(kind=='ore'){
+                for(int y=0;y<16;y++) for(int x=0;x<16;x++){int n=noise(x,y)%100;put(x,y,n<48?0xFF303238:(n<82?0xFF494C54:0xFF656A73))}
+                for(int i=0;i<42;i++){int x=noise(i,5)%16,y=noise(i,13)%16;put(x,y,(i%5==0)?hi:mid);if(i%3==0)put(x+1,y,hi);if(i%4==0)put(x,y+1,lo)}
+                for(int i=0;i<8;i++){int x=noise(i,29)%16,y=noise(i,37)%16;put(x,y,hi);put(x+1,y,mid);put(x,y+1,hi)}
+            } else if(kind=='ingot' || kind=='raw'){
+                for(int y=0;y<16;y++)for(int x=0;x<16;x++)put(x,y,0x00000000)
+                for(int y=5;y<=10;y++)for(int x=2;x<=13;x++)put(x,y,(x==2||x==13||y==5||y==10)?lo:mid)
+                for(int x=3;x<=12;x++){put(x,6,hi);put(x,7,hi)}
+                for(int x=4;x<=11;x++)put(x,9,lo)
+                if(kind=='raw')for(int i=0;i<14;i++){int x=3+noise(i,41)%10,y=5+noise(i,47)%6;put(x,y,i%3==0?hi:mid)}
+                else {put(6,8,hi);put(7,8,hi);put(8,8,hi);put(9,8,mid)}
+            } else {
+                // Distinct metallic silhouette for each armor piece or tool.
+                for(int y=2;y<15;y++)for(int x=2;x<14;x++){
+                    boolean shape=kind=='helmet'?(y>=3&&y<=12&&x>=3&&x<=12&&(y>=6||(x>=5&&x<=10))):
+                    kind=='chestplate'?(y>=3&&y<=14&&x>=2&&x<=13&&!(y<6&&(x<5||x>10))):
+                    kind=='leggings'?(y>=2&&y<=14&&x>=3&&x<=12&&!(y>=8&&x>=7&&x<=8)):
+                    kind=='boots'?((y>=6&&y<=12&&((x>=2&&x<=6)||(x>=9&&x<=13)))||(y>=12&&y<=14):
+                    kind in ['sword','pickaxe','axe','shovel','hoe']?false:(Math.abs(x-7)+Math.abs(y-7)<=5)
+                    if(shape)put(x,y,(x==2||x==13||y==3||y==14)?lo:mid)
+                }
+                if(kind in ['sword','pickaxe','axe','shovel','hoe']){
+                    for(int i=0;i<9;i++){put(4+i,12-i,lo);put(5+i,12-i,mid);put(6+i,12-i,hi)}
+                    if(kind=='sword')for(int x=7;x<15;x++){put(x,3,hi);put(x,4,mid)}
+                    if(kind=='pickaxe')for(int x=2;x<15;x++){put(x,3,hi);put(x,4,mid)}
+                    if(kind=='axe')for(int y=2;y<9;y++)for(int x=9;x<15;x++)put(x,y,(x==9||y==2)?lo:mid)
+                    if(kind=='shovel')for(int y=2;y<8;y++)for(int x=7;x<13;x++)put(x,y,(x==7||y==2)?lo:hi)
+                    if(kind=='hoe')for(int x=8;x<15;x++){put(x,3,hi);put(x,4,mid)}
+                } else {
+                    for(int x=4;x<=11;x++){put(x,4,hi);put(x,5,mid)}
+                    put(4,6,hi);put(11,6,hi);put(7,7,hi);put(8,7,hi);put(7,8,mid);put(8,8,hi)
+                    if(kind=='chestplate')for(int y=7;y<13;y++){put(5,y,hi);put(10,y,lo)}
+                    if(kind=='leggings')for(int y=5;y<13;y++){put(5,y,hi);put(10,y,lo)}
+                    if(kind=='boots'){put(3,13,hi);put(4,13,hi);put(11,13,hi);put(12,13,hi)}
+                }
+            }
+            javax.imageio.ImageIO.write(img,'png',target)
+        }
+        richPalettes.each { material, colors ->
+            def oreName=material=='charolite'?'charolite_ore':"${material}_ore"
+            richTexture("assets/emberandfrost/textures/block/${oreName}.png",'ore',colors)
+            writeJson("assets/emberandfrost/models/block/${oreName}.json",[parent:'minecraft:block/cube_all',textures:[all:"emberandfrost:block/${oreName}"]])
+            if(material!='charolite'){
+                richTexture("assets/emberandfrost/textures/item/${material}_ingot.png",'ingot',colors)
+                richTexture("assets/emberandfrost/textures/item/raw_${material}.png",'raw',colors)
+                ['helmet','chestplate','leggings','boots','sword','pickaxe','axe','shovel','hoe'].each { part ->
+                    richTexture("assets/emberandfrost/textures/item/${material}_${part}.png",part,colors)
+                }
+            }
+        }
+
     }
 }
 
