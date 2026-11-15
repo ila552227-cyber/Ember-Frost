@@ -184,7 +184,7 @@ tasks.register('generateEmberFrostResources') {
                     g.setColor(new java.awt.Color(pal[shade][0],pal[shade][1],pal[shade][2],255)); g.fillRect(x,y,w,h)
                     g.setColor(new java.awt.Color(pal[4][0],pal[4][1],pal[4][2],255)); g.drawLine(x,y,x+w-1,y)
                     g.setColor(new java.awt.Color(pal[0][0],pal[0][1],pal[0][2],255)); g.drawLine(x,y+h-1,x+w-1,y+h-1)
-                    if(w>4 && h>4){g.setColor(new java.awt.Color(pal[1][0],pal[1][1],pal[1][2],255));g.drawLine(x+w/2,y+2,x+w/2,y+h-2)}
+                    if(w>4 && h>4){g.setColor(new java.awt.Color(pal[1][0],pal[1][1],pal[1][2],255));g.drawLine(x+w.intdiv(2),y+2,x+w.intdiv(2),y+h-2)}
                 }
                 if(layer=='humanoid') {
                     [[8,0,8,8,2],[0,8,8,8,1],[8,8,8,8,3],[16,8,8,8,2],[24,8,8,8,1],
