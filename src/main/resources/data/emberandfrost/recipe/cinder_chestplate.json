@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "A A",
+    "ABA",
+    "AAA"
+  ],
+  "key": {
+    "A": "emberandfrost:cinder_ingot",
+    "B": "emberandfrost:cinder_ore"
+  },
+  "result": {
+    "id": "emberandfrost:cinder_chestplate"
+  }
+}
