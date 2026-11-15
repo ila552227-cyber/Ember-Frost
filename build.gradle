@@ -91,11 +91,17 @@ tasks.register('generateEmberFrostResources') {
             def target = new File(root, relativePath)
             if (!file("src/main/resources/${relativePath}").exists() && !target.exists()) {
                 target.parentFile.mkdirs()
-                def image = new java.awt.image.BufferedImage(16, 16, java.awt.image.BufferedImage.TYPE_INT_ARGB)
+                def layerTexture = relativePath.contains('/equipment/')
+                def image = new java.awt.image.BufferedImage(layerTexture ? 64 : 16, layerTexture ? 32 : 16, java.awt.image.BufferedImage.TYPE_INT_ARGB)
                 def dark = new java.awt.Color((rgb >> 16 & 255) * 0.48 as int, (rgb >> 8 & 255) * 0.48 as int, (rgb & 255) * 0.48 as int).getRGB()
                 def main = 0xFF000000 | rgb
                 def light = new java.awt.Color(Math.min(255, ((rgb >> 16 & 255) * 1.28) as int), Math.min(255, ((rgb >> 8 & 255) * 1.28) as int), Math.min(255, ((rgb & 255) * 1.28) as int)).getRGB()
-                def put = { int x, int y, int color -> if (x >= 0 && x < 16 && y >= 0 && y < 16) image.setRGB(x,y,color) }
+                def put = { int x, int y, int color ->
+                    if (x >= 0 && x < 16 && y >= 0 && y < 16) {
+                        if (layerTexture) { for(int dx=0;dx<4;dx++) for(int dy=0;dy<2;dy++) image.setRGB(x*4+dx,y*2+dy,color) }
+                        else image.setRGB(x,y,color)
+                    }
+                }
                 if (kind == 'helmet') {
                     for (int y=3;y<=11;y++) for (int x=3;x<=12;x++) if (y>=5 || (x>=5&&x<=10)) put(x,y,main)
                     for (int x=4;x<=11;x++) put(x,3,light)
