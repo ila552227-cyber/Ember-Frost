@@ -1,24 +1,21 @@
 package com.emberandfrost;
 
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.Snowball;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.Snowball;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
 
 public final class ElementalProjectile extends Snowball {
     public enum Effect { FIRE, SLOW, KNOCKBACK, POISON }
-
     private final Effect effect;
 
-    public ElementalProjectile(ServerLevel level, LivingEntity owner, ItemStack stack, Effect effect) {
+    public ElementalProjectile(Level level, double x, double y, double z, ItemStack stack, Effect effect) {
         super(EntityType.SNOWBALL, level);
-        setOwner(owner);
+        setPos(x, y, z);
         setItem(stack);
         this.effect = effect;
     }
@@ -36,14 +33,6 @@ public final class ElementalProjectile extends Snowball {
                 target.hurtMarked = true;
             }
             case POISON -> target.addEffect(new MobEffectInstance(MobEffects.POISON, 100, 0));
-        }
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (level() instanceof ServerLevel server && tickCount % 2 == 0) {
-            server.sendParticles(ParticleTypes.FLAME, getX(), getY(), getZ(), 1, 0.02, 0.02, 0.02, 0.0);
         }
     }
 }
