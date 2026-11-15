@@ -21,5 +21,13 @@ public final class ModItems {
 
     public static final DeferredItem<Item> CHAROLITE_SHARD = ITEMS.registerSimpleItem("charolite_shard");
 
+    static {
+        ITEMS.registerSimpleBlockItem("cinder_ore", ModBlocks.CINDER_ORE);
+        ITEMS.registerSimpleBlockItem("cryolite_ore", ModBlocks.CRYOLITE_ORE);
+        ITEMS.registerSimpleBlockItem("ashen_ore", ModBlocks.ASHEN_ORE);
+        ITEMS.registerSimpleBlockItem("magma_ore", ModBlocks.MAGMA_ORE);
+        ITEMS.registerSimpleBlockItem("charolite_ore", ModBlocks.CHAROLITE_ORE);
+    }
+
     private ModItems() {}
 }
