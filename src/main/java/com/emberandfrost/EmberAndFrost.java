@@ -11,6 +11,6 @@ public final class EmberAndFrost {
     public static final String MOD_ID = "emberandfrost";
 
     public EmberAndFrost(IEventBus modEventBus) {
-        // Content registries and gameplay systems are registered here.
+        ModItems.ITEMS.register(modEventBus);
     }
 }
