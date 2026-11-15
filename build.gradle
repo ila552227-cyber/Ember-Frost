@@ -96,10 +96,11 @@ tasks.register('generateEmberFrostResources') {
                 def dark = new java.awt.Color((rgb >> 16 & 255) * 0.48 as int, (rgb >> 8 & 255) * 0.48 as int, (rgb & 255) * 0.48 as int).getRGB()
                 def main = 0xFF000000 | rgb
                 def light = new java.awt.Color(Math.min(255, ((rgb >> 16 & 255) * 1.28) as int), Math.min(255, ((rgb >> 8 & 255) * 1.28) as int), Math.min(255, ((rgb & 255) * 1.28) as int)).getRGB()
-                def put = { int x, int y, int color ->
+                def put = { int x, int y, color ->
                     if (x >= 0 && x < 16 && y >= 0 && y < 16) {
-                        if (layerTexture) { for(int dx=0;dx<4;dx++) for(int dy=0;dy<2;dy++) image.setRGB(x*4+dx,y*2+dy,color) }
-                        else image.setRGB(x,y,color)
+                        int pixel = color as int
+                        if (layerTexture) { for(int dx=0;dx<4;dx++) for(int dy=0;dy<2;dy++) image.setRGB(x*4+dx,y*2+dy,pixel) }
+                        else image.setRGB(x,y,pixel)
                     }
                 }
                 if (kind == 'helmet') {
