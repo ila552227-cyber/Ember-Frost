@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "A A",
+    "A A",
+    "   "
+  ],
+  "key": {
+    "A": "emberandfrost:cinder_ingot",
+    "B": "minecraft:stick"
+  },
+  "result": {
+    "id": "emberandfrost:cinder_boots"
+  }
+}
