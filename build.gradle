@@ -173,10 +173,14 @@ tasks.register('generateEmberFrostResources') {
         writeJson('assets/emberandfrost/models/block/charolite_ore.json', [parent:'minecraft:block/cube_all', textures:[all:'minecraft:block/amethyst_block']])
         // Natural ore generation in the specified height bands.
         def ores = [
-            [id:'cinder', block:'cinder_ore', min:20, max:60, count:9, size:9, biome:'#minecraft:is_overworld', replace:'minecraft:stone_ore_replaceables'],
-            [id:'cryolite', block:'cryolite_ore', min:-10, max:30, count:7, size:7, biome:'#minecraft:is_overworld', replace:'minecraft:stone_ore_replaceables'],
-            [id:'ashen', block:'ashen_ore', min:30, max:90, count:8, size:8, biome:'#minecraft:is_nether', replace:'minecraft:base_stone_nether'],
-            [id:'magma', block:'magma_ore', min:10, max:50, count:6, size:6, biome:'#minecraft:is_nether', replace:'minecraft:base_stone_nether'],
+            // Cinder is the Nether-side Carbon Abyss material; keep its generation in the Nether.
+            [id:'cinder', block:'cinder_ore', min:10, max:20, count:5, size:6, biome:'#minecraft:is_nether', replace:'minecraft:base_stone_nether'],
+            // Cryolite belongs to the Overworld. Its crystal geodes are a separate worldgen feature to be added next.
+            [id:'cryolite', block:'cryolite_ore', min:10, max:20, count:4, size:5, biome:'#minecraft:is_overworld', replace:'minecraft:stone_ore_replaceables'],
+            // Ashen ore is Nether-only and restricted to the agreed Y=10..20 band.
+            [id:'ashen', block:'ashen_ore', min:10, max:20, count:5, size:6, biome:'#minecraft:is_nether', replace:'minecraft:base_stone_nether'],
+            // Magma ore belongs to the Overworld, inside the future Magma Crater biome.
+            [id:'magma', block:'magma_ore', min:10, max:20, count:4, size:5, biome:'#minecraft:is_overworld', replace:'minecraft:stone_ore_replaceables'],
             [id:'charolite', block:'charolite_ore', min:-50, max:0, count:3, size:4, biome:'#minecraft:is_overworld', replace:'minecraft:stone_ore_replaceables']
         ]
         writeJson('data/minecraft/tags/block/mineable/pickaxe.json', [replace:false, values:['emberandfrost:cinder_ore','emberandfrost:cryolite_ore','emberandfrost:ashen_ore','emberandfrost:magma_ore','emberandfrost:charolite_ore']])
