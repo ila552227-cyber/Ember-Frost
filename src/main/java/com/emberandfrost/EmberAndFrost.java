@@ -9,5 +9,6 @@ public final class EmberAndFrost {
     public EmberAndFrost(IEventBus modEventBus) {
         ModBlocks.BLOCKS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
+        ModCreativeTabs.TABS.register(modEventBus);
     }
 }
