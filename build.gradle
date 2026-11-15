@@ -87,6 +87,44 @@ tasks.register('generateEmberFrostResources') {
             def pool = [rolls:1, entries:[alternatives]]
             [type:'minecraft:block', pools:[pool]]
         }
+        def writePixelPng = { String relativePath, String kind, int rgb ->
+            def target = new File(root, relativePath)
+            if (!file("src/main/resources/${relativePath}").exists() && !target.exists()) {
+                target.parentFile.mkdirs()
+                def image = new java.awt.image.BufferedImage(16, 16, java.awt.image.BufferedImage.TYPE_INT_ARGB)
+                def dark = new java.awt.Color((rgb >> 16 & 255) * 0.48 as int, (rgb >> 8 & 255) * 0.48 as int, (rgb & 255) * 0.48 as int).getRGB()
+                def main = 0xFF000000 | rgb
+                def light = new java.awt.Color(Math.min(255, ((rgb >> 16 & 255) * 1.28) as int), Math.min(255, ((rgb >> 8 & 255) * 1.28) as int), Math.min(255, ((rgb & 255) * 1.28) as int)).getRGB()
+                def put = { int x, int y, int color -> if (x >= 0 && x < 16 && y >= 0 && y < 16) image.setRGB(x,y,color) }
+                if (kind == 'helmet') {
+                    for (int y=3;y<=11;y++) for (int x=3;x<=12;x++) if (y>=5 || (x>=5&&x<=10)) put(x,y,main)
+                    for (int x=4;x<=11;x++) put(x,3,light)
+                    for (int x=5;x<=10;x++) put(x,8,dark)
+                } else if (kind == 'chestplate') {
+                    for (int y=3;y<=13;y++) for (int x=2;x<=13;x++) if (!(y<6&&(x<5||x>10))) put(x,y,main)
+                    for (int x=3;x<=12;x++) put(x,3,light)
+                    for (int y=7;y<=12;y++){put(5,y,dark);put(10,y,dark)}
+                } else if (kind == 'leggings') {
+                    for (int y=2;y<=13;y++) for (int x=3;x<=12;x++) if (!(y>=8&&x>=7&&x<=8)) put(x,y,main)
+                    for (int y=4;y<=12;y++){put(5,y,dark);put(10,y,dark)}
+                } else if (kind == 'boots') {
+                    for (int y=5;y<=12;y++){for(int x=3;x<=6;x++)put(x,y,main);for(int x=9;x<=12;x++)put(x,y,main)}
+                    for (int x=2;x<=7;x++) put(x,13,dark)
+                    for (int x=8;x<=13;x++) put(x,13,dark)
+                } else if (kind in ['sword','pickaxe','axe','shovel','hoe']) {
+                    for(int i=0;i<9;i++){put(4+i,12-i,main);put(5+i,12-i,light)}
+                    if(kind=='sword'){for(int x=8;x<=13;x++)put(x,3,main);for(int y=3;y<=8;y++)put(13,y,main)}
+                    if(kind=='pickaxe'){for(int x=3;x<=13;x++)put(x,3,main);put(4,4,dark);put(12,4,dark)}
+                    if(kind=='axe'){for(int y=2;y<=7;y++)for(int x=8;x<=13;x++)put(x,y,main)}
+                    if(kind=='shovel'){for(int y=2;y<=6;y++)for(int x=7;x<=11;x++)put(x,y,main)}
+                    if(kind=='hoe'){for(int x=8;x<=13;x++)put(x,4,main)}
+                } else {
+                    for(int y=4;y<=11;y++)for(int x=4;x<=11;x++)if(Math.abs(x-7.5)+Math.abs(y-7.5)<=6)put(x,y,main)
+                    put(6,5,light);put(7,5,light);put(8,6,light)
+                }
+                javax.imageio.ImageIO.write(image, 'png', target)
+            }
+        }
         def sets = [
             [id:'cinder', ru:'Углерун', ing:'cinder_ingot', ore:'cinder_ore'],
             [id:'cryolite', ru:'Криолит', ing:'cryolite_ingot', ore:'cryolite_ore'],
@@ -135,10 +173,26 @@ tasks.register('generateEmberFrostResources') {
                 def name = "${s.id}_${p.id}"
                 def key = [A:"emberandfrost:${s.ing}", B:(p.id == 'chestplate' ? "emberandfrost:${s.ore}" : 'minecraft:stick')]
                 writeJson("data/emberandfrost/recipe/${name}.json", [type:'minecraft:crafting_shaped', pattern:p.pattern, key:key, result:[id:"emberandfrost:${name}"]])
-                writeJson("assets/emberandfrost/models/item/${name}.json", [parent:(p.handheld ? 'minecraft:item/handheld' : 'minecraft:item/generated'), textures:[layer0:p.texture]])
+                writeJson("assets/emberandfrost/models/item/${name}.json", [parent:(p.handheld ? 'minecraft:item/handheld' : 'minecraft:item/generated'), textures:[layer0:"emberandfrost:item/\${name}"]])
                 writeJson("assets/emberandfrost/items/${name}.json", [model:[type:'minecraft:model', model:"emberandfrost:item/${name}"]])
                 ru["item.emberandfrost.${name}"] = "${s.ru} ${p.ru}"
                 en["item.emberandfrost.${name}"] = "${s.id.capitalize()} ${p.id.capitalize()}"
+                def palettes = [cinder:0xE45B2A, cryolite:0x4BA9D8, ashen:0x777777, magma:0xB52D18]
+                writePixelPng("assets/emberandfrost/textures/item/${name}.png", p.id, palettes[s.id])
+            }
+            def palettes = [cinder:0xE45B2A, cryolite:0x4BA9D8, ashen:0x777777, magma:0xB52D18]
+            writeJson("assets/emberandfrost/equipment/${s.id}.json", [layers:[humanoid:[[texture:"emberandfrost:${s.id}_layer_1"]], humanoid_leggings:[[texture:"emberandfrost:${s.id}_layer_1"]]]])
+            writePixelPng("assets/emberandfrost/textures/entity/equipment/humanoid/${s.id}_layer_1.png", "chestplate", palettes[s.id])
+            writePixelPng("assets/emberandfrost/textures/entity/equipment/humanoid_leggings/${s.id}_layer_1.png", "leggings", palettes[s.id])
+            def projectileTypes = [fire:[ingredient:'minecraft:gunpowder', ru:'Огненный снаряд', en:'Fire Projectile'], slow:[ingredient:'minecraft:snowball', ru:'Ледяной снаряд', en:'Frost Projectile'], knockback:[ingredient:'minecraft:feather', ru:'Отбрасывающий снаряд', en:'Knockback Projectile'], poison:[ingredient:'minecraft:spider_eye', ru:'Ядовитый снаряд', en:'Poison Projectile']]
+            projectileTypes.each { type, data ->
+                def id = "${s.id}_${type}_projectile"
+                writeJson("data/emberandfrost/recipe/${id}.json", [type:'minecraft:crafting_shaped', pattern:[' A ','ABA',' A '], key:[A:"emberandfrost:${s.ing}", B:data.ingredient], result:[id:"emberandfrost:${id}", count:1]])
+                writeJson("assets/emberandfrost/models/item/${id}.json", [parent:'minecraft:item/generated', textures:[layer0:"emberandfrost:item/${id}"]])
+                writeJson("assets/emberandfrost/items/${id}.json", [model:[type:'minecraft:model', model:"emberandfrost:item/${id}"]])
+                ru["item.emberandfrost.${id}"] = "${s.ru}: ${data.ru}"
+                en["item.emberandfrost.${id}"] = "${s.id.capitalize()} ${data.en}"
+                writePixelPng("assets/emberandfrost/textures/item/${id}.png", "projectile", palettes[s.id])
             }
             writeJson("data/emberandfrost/tags/item/repairs_${s.id}.json", [replace:false, values:["emberandfrost:${s.ing}"]])
             writeJson("data/emberandfrost/loot_table/blocks/${s.ore}.json", oreLoot(s.ore, "raw_${s.id}"))
