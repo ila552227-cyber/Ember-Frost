@@ -1,14 +1,13 @@
 package com.emberandfrost;
 
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Position;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SnowballItem;
 import net.minecraft.world.level.Level;
 
-public final class ElementalProjectileItem extends Item {
+public final class ElementalProjectileItem extends SnowballItem {
     private final ElementalProjectile.Effect effect;
 
     public ElementalProjectileItem(Properties properties, ElementalProjectile.Effect effect) {
@@ -17,15 +16,7 @@ public final class ElementalProjectileItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-        if (!level.isClientSide() && level instanceof ServerLevel serverLevel) {
-            ElementalProjectile projectile = new ElementalProjectile(serverLevel, player, stack.copyWithCount(1), effect);
-            projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
-            serverLevel.addFreshEntity(projectile);
-        }
-        if (!player.getAbilities().instabuild) stack.shrink(1);
-        player.getCooldowns().addCooldown(this, 12);
-        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+    public Projectile asProjectile(Level level, Position position, ItemStack stack, Direction direction) {
+        return new ElementalProjectile(level, position.x(), position.y(), position.z(), stack, effect);
     }
 }
