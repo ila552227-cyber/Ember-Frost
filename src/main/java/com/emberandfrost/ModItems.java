@@ -3,8 +3,8 @@ package com.emberandfrost;
 import java.util.EnumMap;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -22,11 +22,11 @@ public final class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(EmberAndFrost.MOD_ID);
 
     private static TagKey<net.minecraft.world.item.Item> repairTag(String name) {
-        return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(EmberAndFrost.MOD_ID, name));
+        return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(EmberAndFrost.MOD_ID, name));
     }
 
     private static final ResourceKey<EquipmentAsset> IRON_ASSET =
-            ResourceKey.create(EquipmentAssets.ROOT_ID, ResourceLocation.withDefaultNamespace("iron"));
+            ResourceKey.create(EquipmentAssets.ROOT_ID, Identifier.withDefaultNamespace("iron"));
 
     private static ArmorMaterial armor(int durability, int helmet, int chest, int legs, int boots, int enchant, float toughness) {
         return new ArmorMaterial(durability, Util.make(new EnumMap<>(ArmorType.class), map -> {
