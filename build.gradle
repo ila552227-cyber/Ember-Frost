@@ -225,6 +225,32 @@ tasks.register('generateEmberFrostResources') {
         writeJson('data/emberandfrost/loot_table/blocks/charolite_ore.json', oreLoot('charolite_ore', 'charolite_shard'))
         writeJson('assets/emberandfrost/blockstates/charolite_ore.json', [variants:['':[model:'emberandfrost:block/charolite_ore']]])
         writeJson('assets/emberandfrost/models/block/charolite_ore.json', [parent:'minecraft:block/cube_all', textures:[all:'minecraft:block/amethyst_block']])
+        // Four data-driven enchantments with their intended level caps.
+        def enchantments = [
+            sharpness_viii:[description:'enchantment.emberandfrost.sharpness_viii', supported:'#minecraft:enchantable/weapon', max:8, slots:['mainhand'], effects:['minecraft:damage':[[effect:[type:'minecraft:add', value:[type:'minecraft:linear', base:0.5, per_level_above_first:0.5]]]]]],
+            protection_v:[description:'enchantment.emberandfrost.protection_v', supported:'#minecraft:enchantable/armor', max:5, slots:['armor'], effects:['minecraft:damage_protection':[[effect:[type:'minecraft:add', value:[type:'minecraft:linear', base:1.0, per_level_above_first:0.5]]]], 'minecraft:attributes':[[id:'emberandfrost:protection_v_slowdown', attribute:'minecraft:movement_speed', amount:[type:'minecraft:linear', base:-0.03, per_level_above_first:-0.03], operation:'add_multiplied_total']]]],
+            durability_iv:[description:'enchantment.emberandfrost.durability_iv', supported:'#minecraft:enchantable/durability', max:4, slots:['any'], effects:['minecraft:item_damage':[[effect:[type:'minecraft:remove_binomial', chance:[type:'minecraft:linear', base:0.1, per_level_above_first:0.1]]]]]],
+            efficiency_vii:[description:'enchantment.emberandfrost.efficiency_vii', supported:'#minecraft:enchantable/mining', max:7, slots:['mainhand'], effects:['minecraft:attributes':[[id:'emberandfrost:efficiency_vii_speed', attribute:'minecraft:block_break_speed', amount:[type:'minecraft:linear', base:0.25, per_level_above_first:0.25], operation:'add_value']]]]
+        ]
+        enchantments.each { id, e ->
+            writeJson("data/emberandfrost/enchantment/${id}.json", [
+                description:[translate:e.description], supported_items:e.supported, primary_items:e.supported,
+                weight:4, max_level:e.max, min_cost:[base:1, per_level_above_first:10],
+                max_cost:[base:20, per_level_above_first:10], anvil_cost:4, slots:e.slots, effects:e.effects
+            ])
+        }
+        ru.putAll([
+            'enchantment.emberandfrost.sharpness_viii':'Острота VIII',
+            'enchantment.emberandfrost.protection_v':'Защита V',
+            'enchantment.emberandfrost.durability_iv':'Прочность IV',
+            'enchantment.emberandfrost.efficiency_vii':'Эффективность VII'
+        ])
+        en.putAll([
+            'enchantment.emberandfrost.sharpness_viii':'Sharpness VIII',
+            'enchantment.emberandfrost.protection_v':'Protection V',
+            'enchantment.emberandfrost.durability_iv':'Durability IV',
+            'enchantment.emberandfrost.efficiency_vii':'Efficiency VII'
+        ])
         // Natural ore generation in the specified height bands.
         def ores = [
             [id:'cinder', block:'cinder_ore', min:20, max:60, count:9, size:9, biome:'#minecraft:is_overworld', replace:'minecraft:stone_ore_replaceables'],
