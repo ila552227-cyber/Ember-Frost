@@ -27,20 +27,24 @@ public final class ModItems {
     private static final ResourceKey<EquipmentAsset> IRON_ASSET =
             ResourceKey.create(EquipmentAssets.ROOT_ID, Identifier.withDefaultNamespace("iron"));
 
-    private static ArmorMaterial armor(int durability, int helmet, int chest, int legs, int boots, int enchant, float toughness) {
+    private static ResourceKey<EquipmentAsset> armorAsset(String name) {
+        return ResourceKey.create(EquipmentAssets.ROOT_ID, Identifier.fromNamespaceAndPath(EmberAndFrost.MOD_ID, name));
+    }
+
+    private static ArmorMaterial armor(int durability, int helmet, int chest, int legs, int boots, int enchant, float toughness, String asset) {
         return new ArmorMaterial(durability, Util.make(new EnumMap<>(ArmorType.class), map -> {
             map.put(ArmorType.HELMET, helmet);
             map.put(ArmorType.CHESTPLATE, chest);
             map.put(ArmorType.LEGGINGS, legs);
             map.put(ArmorType.BOOTS, boots);
             map.put(ArmorType.BODY, chest);
-        }), enchant, SoundEvents.ARMOR_EQUIP_IRON, toughness, 0.0F, repairTag("repairs_armor"), IRON_ASSET);
+        }), enchant, SoundEvents.ARMOR_EQUIP_IRON, toughness, 0.0F, repairTag("repairs_armor"), armorAsset(asset));
     }
 
-    private static final ArmorMaterial CINDER_ARMOR = armor(28, 3, 7, 5, 2, 15, 1.0F);
-    private static final ArmorMaterial CRYOLITE_ARMOR = armor(34, 3, 8, 6, 3, 18, 2.0F);
-    private static final ArmorMaterial ASHEN_ARMOR = armor(36, 3, 8, 6, 3, 18, 2.5F);
-    private static final ArmorMaterial MAGMA_ARMOR = armor(40, 3, 9, 6, 3, 20, 3.0F);
+    private static final ArmorMaterial CINDER_ARMOR = armor(28, 3, 7, 5, 2, 15, 1.0F, "cinder");
+    private static final ArmorMaterial CRYOLITE_ARMOR = armor(34, 3, 8, 6, 3, 18, 2.0F, "cryolite");
+    private static final ArmorMaterial ASHEN_ARMOR = armor(36, 3, 8, 6, 3, 18, 2.5F, "ashen");
+    private static final ArmorMaterial MAGMA_ARMOR = armor(40, 3, 9, 6, 3, 20, 3.0F, "magma");
 
     private static ToolMaterial tool(int durability, float speed, float attack, TagKey<net.minecraft.world.level.block.Block> incorrect, String repair) {
         return new ToolMaterial(incorrect, durability, speed, attack, 18, repairTag(repair));
@@ -84,7 +88,18 @@ public final class ModItems {
         ITEMS.registerItem(id + "_hoe", p -> new Item(p.hoe(material, 0.0F, -3.0F)));
     }
 
+    private static void projectileSet(String material) {
+        ITEMS.registerItem(material + "_fire_projectile", p -> new ElementalProjectileItem(p, ElementalProjectile.Effect.FIRE));
+        ITEMS.registerItem(material + "_slow_projectile", p -> new ElementalProjectileItem(p, ElementalProjectile.Effect.SLOW));
+        ITEMS.registerItem(material + "_knockback_projectile", p -> new ElementalProjectileItem(p, ElementalProjectile.Effect.KNOCKBACK));
+        ITEMS.registerItem(material + "_poison_projectile", p -> new ElementalProjectileItem(p, ElementalProjectile.Effect.POISON));
+    }
+
     static {
+        projectileSet("cinder");
+        projectileSet("cryolite");
+        projectileSet("ashen");
+        projectileSet("magma");
         armorSet("cinder", CINDER_ARMOR);
         armorSet("cryolite", CRYOLITE_ARMOR);
         armorSet("ashen", ASHEN_ARMOR);
