@@ -23,10 +23,10 @@ public final class ArmorSetEffects {
             apply(player, MobEffects.FIRE_RESISTANCE, 0);
             apply(player, MobEffects.SLOWNESS, 0);
         } else if (wearingFullSet(player, "cryolite")) {
-            apply(player, MobEffects.MOVEMENT_SPEED, 0);
+            apply(player, MobEffects.SPEED, 0);
             apply(player, MobEffects.WEAKNESS, 0);
         } else if (wearingFullSet(player, "ashen")) {
-            apply(player, MobEffects.DAMAGE_BOOST, 0);
+            apply(player, MobEffects.STRENGTH, 0);
             apply(player, MobEffects.HUNGER, 0);
         } else if (wearingFullSet(player, "magma")) {
             apply(player, MobEffects.FIRE_RESISTANCE, 0);
