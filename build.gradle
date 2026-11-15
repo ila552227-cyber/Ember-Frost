@@ -173,7 +173,7 @@ tasks.register('generateEmberFrostResources') {
                 def name = "${s.id}_${p.id}"
                 def key = [A:"emberandfrost:${s.ing}", B:(p.id == 'chestplate' ? "emberandfrost:${s.ore}" : 'minecraft:stick')]
                 writeJson("data/emberandfrost/recipe/${name}.json", [type:'minecraft:crafting_shaped', pattern:p.pattern, key:key, result:[id:"emberandfrost:${name}"]])
-                writeJson("assets/emberandfrost/models/item/${name}.json", [parent:(p.handheld ? 'minecraft:item/handheld' : 'minecraft:item/generated'), textures:[layer0:"emberandfrost:item/\${name}"]])
+                writeJson("assets/emberandfrost/models/item/${name}.json", [parent:(p.handheld ? 'minecraft:item/handheld' : 'minecraft:item/generated'), textures:[layer0:"emberandfrost:item/${name}"]])
                 writeJson("assets/emberandfrost/items/${name}.json", [model:[type:'minecraft:model', model:"emberandfrost:item/${name}"]])
                 ru["item.emberandfrost.${name}"] = "${s.ru} ${p.ru}"
                 en["item.emberandfrost.${name}"] = "${s.id.capitalize()} ${p.id.capitalize()}"
