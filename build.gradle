@@ -174,9 +174,9 @@ tasks.register('generateEmberFrostResources') {
         // Natural ore generation in the specified height bands.
         def ores = [
             // Cinder is the Nether-side Carbon Abyss material; keep its generation in the Nether.
-            [id:'cinder', block:'cinder_ore', min:10, max:20, count:5, size:6, biome:'#minecraft:is_nether', replace:'minecraft:base_stone_nether'],
+            [id:'cinder', block:'cinder_ore', min:10, max:20, count:5, size:6, biome:'#emberandfrost:nether_biomes', replace:'minecraft:base_stone_nether'],
             // Cryolite belongs to the Overworld. Its crystal geodes are a separate worldgen feature to be added next.
-            [id:'cryolite', block:'cryolite_ore', min:10, max:20, count:4, size:5, biome:'#minecraft:is_overworld', replace:'minecraft:stone_ore_replaceables'],
+            [id:'cryolite', block:'cryolite_ore', min:10, max:20, count:4, size:5, biome:'#emberandfrost:overworld_biomes', replace:'minecraft:stone_ore_replaceables'],
             // Ashen ore is Nether-only and restricted to the agreed Y=10..20 band.
             [id:'ashen', block:'ashen_ore', min:10, max:20, count:5, size:6, biome:'#minecraft:is_nether', replace:'minecraft:base_stone_nether'],
             // Magma ore belongs to the Overworld, inside the future Magma Crater biome.
