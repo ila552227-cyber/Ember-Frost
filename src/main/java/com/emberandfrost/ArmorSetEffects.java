@@ -30,7 +30,7 @@ public final class ArmorSetEffects {
             apply(player, MobEffects.HUNGER, 0);
         } else if (wearingFullSet(player, "magma")) {
             apply(player, MobEffects.FIRE_RESISTANCE, 0);
-            apply(player, MobEffects.DAMAGE_BOOST, 0);
+            apply(player, MobEffects.STRENGTH, 0);
             apply(player, MobEffects.MINING_FATIGUE, 0);
         }
     }
