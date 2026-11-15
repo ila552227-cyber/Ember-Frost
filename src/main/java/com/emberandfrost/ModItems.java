@@ -24,23 +24,24 @@ public final class ModItems {
         return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(EmberAndFrost.MOD_ID, name));
     }
 
-    private static final ResourceKey<EquipmentAsset> IRON_ASSET =
-            ResourceKey.create(EquipmentAssets.ROOT_ID, Identifier.withDefaultNamespace("iron"));
+    private static ResourceKey<EquipmentAsset> equipmentAsset(String name) {
+        return ResourceKey.create(EquipmentAssets.ROOT_ID, Identifier.fromNamespaceAndPath(EmberAndFrost.MOD_ID, name));
+    }
 
-    private static ArmorMaterial armor(int durability, int helmet, int chest, int legs, int boots, int enchant, float toughness) {
+    private static ArmorMaterial armor(String asset, int durability, int helmet, int chest, int legs, int boots, int enchant, float toughness) {
         return new ArmorMaterial(durability, Util.make(new EnumMap<>(ArmorType.class), map -> {
             map.put(ArmorType.HELMET, helmet);
             map.put(ArmorType.CHESTPLATE, chest);
             map.put(ArmorType.LEGGINGS, legs);
             map.put(ArmorType.BOOTS, boots);
             map.put(ArmorType.BODY, chest);
-        }), enchant, SoundEvents.ARMOR_EQUIP_IRON, toughness, 0.0F, repairTag("repairs_armor"), IRON_ASSET);
+        }), enchant, SoundEvents.ARMOR_EQUIP_IRON, toughness, 0.0F, repairTag("repairs_armor"), equipmentAsset(asset));
     }
 
-    private static final ArmorMaterial CINDER_ARMOR = armor(28, 3, 7, 5, 2, 15, 1.0F);
-    private static final ArmorMaterial CRYOLITE_ARMOR = armor(34, 3, 8, 6, 3, 18, 2.0F);
-    private static final ArmorMaterial ASHEN_ARMOR = armor(36, 3, 8, 6, 3, 18, 2.5F);
-    private static final ArmorMaterial MAGMA_ARMOR = armor(40, 3, 9, 6, 3, 20, 3.0F);
+    private static final ArmorMaterial CINDER_ARMOR = armor("cinder", 28, 3, 7, 5, 2, 15, 1.0F);
+    private static final ArmorMaterial CRYOLITE_ARMOR = armor("cryolite", 34, 3, 8, 6, 3, 18, 2.0F);
+    private static final ArmorMaterial ASHEN_ARMOR = armor("ashen", 36, 3, 8, 6, 3, 18, 2.5F);
+    private static final ArmorMaterial MAGMA_ARMOR = armor("magma", 40, 3, 9, 6, 3, 20, 3.0F);
 
     private static ToolMaterial tool(int durability, float speed, float attack, TagKey<net.minecraft.world.level.block.Block> incorrect, String repair) {
         return new ToolMaterial(incorrect, durability, speed, attack, 18, repairTag(repair));
