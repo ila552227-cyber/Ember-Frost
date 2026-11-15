@@ -61,3 +61,94 @@ tasks.withType(ProcessResources).configureEach {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
+
+def emberGeneratedResources = layout.buildDirectory.dir('generated/emberandfrost')
+sourceSets.main.resources.srcDir(emberGeneratedResources)
+
+tasks.register('generateEmberFrostResources') {
+    outputs.dir(emberGeneratedResources)
+    doLast {
+        def root = emberGeneratedResources.get().asFile
+        def writeJson = { String relativePath, Object value ->
+            if (!file("src/main/resources/${relativePath}").exists()) {
+                def target = new File(root, relativePath)
+                target.parentFile.mkdirs()
+                target.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(value))
+            }
+        }
+        def sets = [
+            [id:'cinder', ru:'Углерун', ing:'cinder_ingot', ore:'cinder_ore'],
+            [id:'cryolite', ru:'Криолит', ing:'cryolite_ingot', ore:'cryolite_ore'],
+            [id:'ashen', ru:'Пепельный', ing:'ashen_ingot', ore:'ashen_ore'],
+            [id:'magma', ru:'Магмовый', ing:'magma_ingot', ore:'magma_ore']
+        ]
+        def pieces = [
+            [id:'helmet', ru:'шлем', pattern:['AAA','A A','   '], texture:'minecraft:item/diamond_helmet'],
+            [id:'chestplate', ru:'нагрудник', pattern:['A A','ABA','AAA'], texture:'minecraft:item/diamond_chestplate'],
+            [id:'leggings', ru:'поножи', pattern:['AAA','A A','A A'], texture:'minecraft:item/diamond_leggings'],
+            [id:'boots', ru:'ботинки', pattern:['A A','A A','   '], texture:'minecraft:item/diamond_boots'],
+            [id:'sword', ru:'меч', pattern:['A','A','B'], texture:'minecraft:item/iron_sword', handheld:true],
+            [id:'pickaxe', ru:'кирка', pattern:['AAA',' B ',' B '], texture:'minecraft:item/iron_pickaxe', handheld:true],
+            [id:'axe', ru:'топор', pattern:['AA','AB',' B'], texture:'minecraft:item/iron_axe', handheld:true],
+            [id:'shovel', ru:'лопата', pattern:['A','B','B'], texture:'minecraft:item/iron_shovel', handheld:true],
+            [id:'hoe', ru:'мотыга', pattern:['AA',' B',' B'], texture:'minecraft:item/iron_hoe', handheld:true]
+        ]
+        def ru = [
+            'item.emberandfrost.cinder_ingot':'Слиток Углеруна',
+            'item.emberandfrost.raw_cinder':'Необработанный Углерун',
+            'item.emberandfrost.cryolite_ingot':'Слиток Криолита',
+            'item.emberandfrost.raw_cryolite':'Необработанный Криолит',
+            'item.emberandfrost.ashen_ingot':'Слиток Пепельного',
+            'item.emberandfrost.raw_ashen':'Необработанный Пепельный',
+            'item.emberandfrost.magma_ingot':'Слиток Магмы',
+            'item.emberandfrost.raw_magma':'Необработанная Магма',
+            'item.emberandfrost.charolite_shard':'Чаролитовый осколок',
+            'block.emberandfrost.cinder_ore':'Углеруновая руда',
+            'block.emberandfrost.cryolite_ore':'Криолитовая руда',
+            'block.emberandfrost.ashen_ore':'Пепельная руда',
+            'block.emberandfrost.magma_ore':'Магмовая руда',
+            'block.emberandfrost.charolite_ore':'Чаролитовая руда'
+        ]
+        def en = [
+            'item.emberandfrost.cinder_ingot':'Cinder Ingot','item.emberandfrost.raw_cinder':'Raw Cinder',
+            'item.emberandfrost.cryolite_ingot':'Cryolite Ingot','item.emberandfrost.raw_cryolite':'Raw Cryolite',
+            'item.emberandfrost.ashen_ingot':'Ashen Ingot','item.emberandfrost.raw_ashen':'Raw Ashen',
+            'item.emberandfrost.magma_ingot':'Magma Ingot','item.emberandfrost.raw_magma':'Raw Magma',
+            'item.emberandfrost.charolite_shard':'Charolite Shard',
+            'block.emberandfrost.cinder_ore':'Cinder Ore','block.emberandfrost.cryolite_ore':'Cryolite Ore',
+            'block.emberandfrost.ashen_ore':'Ashen Ore','block.emberandfrost.magma_ore':'Magma Ore',
+            'block.emberandfrost.charolite_ore':'Charolite Ore'
+        ]
+        sets.each { s ->
+            pieces.each { p ->
+                def name = "${s.id}_${p.id}"
+                def key = [A:"emberandfrost:${s.ing}", B:(p.id == 'chestplate' ? "emberandfrost:${s.ore}" : 'minecraft:stick')]
+                writeJson("data/emberandfrost/recipe/${name}.json", [type:'minecraft:crafting_shaped', pattern:p.pattern, key:key, result:[id:"emberandfrost:${name}"]])
+                writeJson("assets/emberandfrost/models/item/${name}.json", [parent:(p.handheld ? 'minecraft:item/handheld' : 'minecraft:item/generated'), textures:[layer0:p.texture]])
+                writeJson("assets/emberandfrost/items/${name}.json", [model:[type:'minecraft:model', model:"emberandfrost:item/${name}"]])
+                ru["item.emberandfrost.${name}"] = "${s.ru} ${p.ru}"
+                en["item.emberandfrost.${name}"] = "${s.id.capitalize()} ${p.id.capitalize()}"
+            }
+            writeJson("data/emberandfrost/tags/item/repairs_${s.id}.json", [replace:false, values:["emberandfrost:${s.ing}"]])
+            def loot = [type:'minecraft:block', pools:[[rolls:1, entries:[[type:'minecraft:alternatives', children:[
+                [type:'minecraft:item', name:"emberandfrost:${s.ore}", conditions:[[condition:'minecraft:match_tool', predicate:[predicates:['minecraft:enchantments':[[enchantments:'minecraft:silk_touch', levels:[min:1]]]]]]]],
+                [type:'minecraft:item', name:"emberandfrost:raw_${s.id}"]
+            ]]]]]]
+            writeJson("data/emberandfrost/loot_table/blocks/${s.ore}.json", loot)
+            writeJson("assets/emberandfrost/blockstates/${s.ore}.json", [variants:['':[model:"emberandfrost:block/${s.ore}"]]])
+            def texture = s.id == 'magma' ? 'netherrack' : (s.id == 'cryolite' ? 'packed_ice' : (s.id == 'ashen' ? 'blackstone' : 'deepslate'))
+            writeJson("assets/emberandfrost/models/block/${s.ore}.json", [parent:'minecraft:block/cube_all', textures:[all:"minecraft:block/${texture}"]])
+            writeJson("data/emberandfrost/tags/item/repairs_${s.id}.json", [replace:false, values:["emberandfrost:${s.ing}"]])
+        }
+        writeJson('data/emberandfrost/tags/item/repairs_armor.json', [replace:false, values:['emberandfrost:cinder_ingot','emberandfrost:cryolite_ingot','emberandfrost:ashen_ingot','emberandfrost:magma_ingot']])
+        ['cinder_ore','cryolite_ore','ashen_ore','magma_ore','charolite_ore'].each { ore ->
+            writeJson("assets/emberandfrost/items/${ore}.json", [model:[type:'minecraft:model', model:"emberandfrost:block/${ore}"]])
+        }
+        writeJson('assets/emberandfrost/lang/ru_ru.json', ru)
+        writeJson('assets/emberandfrost/lang/en_us.json', en)
+    }
+}
+
+tasks.named('processResources').configure {
+    dependsOn tasks.named('generateEmberFrostResources')
+}
