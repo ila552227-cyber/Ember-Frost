@@ -122,7 +122,7 @@ tasks.register('generateEmberFrostResources') {
                     fill(4,7,9,2,pal[1]); fill(5,7,7,1,pal[0]); line(5,5,8,3,pal[4]); line(8,3,12,4,pal[5])
                     fill(6,9,2,1,pal[4]); fill(10,9,2,1,pal[4]); line(4,11,12,11,pal[0])
                 } else if(kind=='chestplate') {
-                    poly([4,2,7,3,9,4,11,3,14,2,15,5,13,8,13,14,3,14,3,8,1,5] as int[],[2,3,4,3,2,5,8,14,14,8,5] as int[],pal[2])
+                    poly([4,7,9,11,14,15,13,13,3,3,1] as int[],[2,3,4,3,2,5,8,14,14,8,5] as int[],pal[2])
                     line(4,4,7,7,pal[4]); line(7,7,8,5,pal[5]); line(12,5,14,4,pal[4])
                     line(8,5,8,13,pal[0],2); fill(4,9,3,3,pal[1]); fill(10,9,3,3,pal[1])
                     fill(5,3,2,1,pal[5]); fill(10,3,2,1,pal[5])
