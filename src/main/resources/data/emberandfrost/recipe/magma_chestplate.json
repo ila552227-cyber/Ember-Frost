@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "A A",
+    "ABA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "emberandfrost:magma_ingot"
+    },
+    "B": {
+      "item": "minecraft:fire_charge"
+    }
+  },
+  "result": {
+    "id": "emberandfrost:magma_chestplate"
+  }
+}

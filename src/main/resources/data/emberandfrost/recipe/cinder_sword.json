@@ -6,8 +6,12 @@
     "B"
   ],
   "key": {
-    "A": "emberandfrost:cinder_ingot",
-    "B": "minecraft:stick"
+    "A": {
+      "item": "emberandfrost:cinder_ingot"
+    },
+    "B": {
+      "item": "minecraft:stick"
+    }
   },
   "result": {
     "id": "emberandfrost:cinder_sword"

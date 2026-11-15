@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "A A",
+    "ABA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "emberandfrost:ashen_ingot"
+    },
+    "B": {
+      "item": "minecraft:basalt"
+    }
+  },
+  "result": {
+    "id": "emberandfrost:ashen_chestplate"
+  }
+}

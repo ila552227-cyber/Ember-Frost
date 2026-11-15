@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "A A",
+    "A A"
+  ],
+  "key": {
+    "A": {
+      "item": "emberandfrost:cryolite_ingot"
+    }
+  },
+  "result": {
+    "id": "emberandfrost:cryolite_leggings"
+  }
+}

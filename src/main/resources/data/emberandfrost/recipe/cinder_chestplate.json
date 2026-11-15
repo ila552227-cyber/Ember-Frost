@@ -6,8 +6,12 @@
     "AAA"
   ],
   "key": {
-    "A": "emberandfrost:cinder_ingot",
-    "B": "emberandfrost:cinder_ore"
+    "A": {
+      "item": "emberandfrost:cinder_ingot"
+    },
+    "B": {
+      "item": "minecraft:magma_cream"
+    }
   },
   "result": {
     "id": "emberandfrost:cinder_chestplate"

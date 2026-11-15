@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "A A",
+    "ABA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "emberandfrost:cryolite_ingot"
+    },
+    "B": {
+      "item": "minecraft:packed_ice"
+    }
+  },
+  "result": {
+    "id": "emberandfrost:cryolite_chestplate"
+  }
+}

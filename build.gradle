@@ -88,10 +88,10 @@ tasks.register('generateEmberFrostResources') {
             [type:'minecraft:block', pools:[pool]]
         }
         def sets = [
-            [id:'cinder', ru:'Углерун', ing:'cinder_ingot', ore:'cinder_ore'],
-            [id:'cryolite', ru:'Криолит', ing:'cryolite_ingot', ore:'cryolite_ore'],
-            [id:'ashen', ru:'Пепельный', ing:'ashen_ingot', ore:'ashen_ore'],
-            [id:'magma', ru:'Магмовый', ing:'magma_ingot', ore:'magma_ore']
+            [id:'cinder', ru:'Углерун', ing:'cinder_ingot', ore:'cinder_ore', catalyst:'minecraft:magma_cream'],
+            [id:'cryolite', ru:'Криолит', ing:'cryolite_ingot', ore:'cryolite_ore', catalyst:'minecraft:packed_ice'],
+            [id:'ashen', ru:'Пепельный', ing:'ashen_ingot', ore:'ashen_ore', catalyst:'minecraft:basalt'],
+            [id:'magma', ru:'Магмовый', ing:'magma_ingot', ore:'magma_ore', catalyst:'minecraft:fire_charge']
         ]
         def pieces = [
             [id:'helmet', ru:'шлем', pattern:['AAA','A A','   '], texture:'minecraft:item/diamond_helmet'],
@@ -133,7 +133,9 @@ tasks.register('generateEmberFrostResources') {
         sets.each { s ->
             pieces.each { p ->
                 def name = "${s.id}_${p.id}"
-                def key = [A:"emberandfrost:${s.ing}", B:(p.id == 'chestplate' ? "emberandfrost:${s.ore}" : 'minecraft:stick')]
+                def key = [A:[item:"emberandfrost:${s.ing}"]]
+                if (p.handheld) key.B = [item:'minecraft:stick']
+                if (p.id == 'chestplate') key.B = [item:s.catalyst]
                 writeJson("data/emberandfrost/recipe/${name}.json", [type:'minecraft:crafting_shaped', pattern:p.pattern, key:key, result:[id:"emberandfrost:${name}"]])
                 writeJson("assets/emberandfrost/models/item/${name}.json", [parent:(p.handheld ? 'minecraft:item/handheld' : 'minecraft:item/generated'), textures:[layer0:p.texture]])
                 writeJson("assets/emberandfrost/items/${name}.json", [model:[type:'minecraft:model', model:"emberandfrost:item/${name}"]])
