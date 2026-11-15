@@ -76,6 +76,17 @@ tasks.register('generateEmberFrostResources') {
                 target.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(value))
             }
         }
+        def oreLoot = { String oreName, String dropName ->
+            def silkCondition = [
+                condition:'minecraft:match_tool',
+                predicate:[predicates:['minecraft:enchantments':[[enchantments:'minecraft:silk_touch', levels:[min:1]]]]]
+            ]
+            def silkEntry = [type:'minecraft:item', name:"emberandfrost:${oreName}", conditions:[silkCondition]]
+            def normalEntry = [type:'minecraft:item', name:"emberandfrost:${dropName}"]
+            def alternatives = [type:'minecraft:alternatives', children:[silkEntry, normalEntry]]
+            def pool = [rolls:1, entries:[alternatives]]
+            [type:'minecraft:block', pools:[pool]]
+        }
         def sets = [
             [id:'cinder', ru:'Углерун', ing:'cinder_ingot', ore:'cinder_ore'],
             [id:'cryolite', ru:'Криолит', ing:'cryolite_ingot', ore:'cryolite_ore'],
@@ -130,11 +141,7 @@ tasks.register('generateEmberFrostResources') {
                 en["item.emberandfrost.${name}"] = "${s.id.capitalize()} ${p.id.capitalize()}"
             }
             writeJson("data/emberandfrost/tags/item/repairs_${s.id}.json", [replace:false, values:["emberandfrost:${s.ing}"]])
-            def loot = [type:'minecraft:block', pools:[[rolls:1, entries:[[type:'minecraft:alternatives', children:[
-                [type:'minecraft:item', name:"emberandfrost:${s.ore}", conditions:[[condition:'minecraft:match_tool', predicate:[predicates:['minecraft:enchantments':[[enchantments:'minecraft:silk_touch', levels:[min:1]]]]]]]],
-                [type:'minecraft:item', name:"emberandfrost:raw_${s.id}"]
-            ]]]]]]
-            writeJson("data/emberandfrost/loot_table/blocks/${s.ore}.json", loot)
+            writeJson("data/emberandfrost/loot_table/blocks/${s.ore}.json", oreLoot(s.ore, "raw_${s.id}"))
             writeJson("assets/emberandfrost/blockstates/${s.ore}.json", [variants:['':[model:"emberandfrost:block/${s.ore}"]]])
             def texture = s.id == 'magma' ? 'netherrack' : (s.id == 'cryolite' ? 'packed_ice' : (s.id == 'ashen' ? 'blackstone' : 'deepslate'))
             writeJson("assets/emberandfrost/models/block/${s.ore}.json", [parent:'minecraft:block/cube_all', textures:[all:"minecraft:block/${texture}"]])
@@ -161,12 +168,7 @@ tasks.register('generateEmberFrostResources') {
             }
         }
         // Charolite is a rare overworld ore; it drops shards unless mined with Silk Touch.
-        writeJson('data/emberandfrost/loot_table/blocks/charolite_ore.json', [
-            type:'minecraft:block', pools:[[rolls:1, entries:[[type:'minecraft:alternatives', children:[
-                [type:'minecraft:item', name:'emberandfrost:charolite_ore', conditions:[[condition:'minecraft:match_tool', predicate:[predicates:['minecraft:enchantments':[[enchantments:'minecraft:silk_touch', levels:[min:1]]]]]]]],
-                [type:'minecraft:item', name:'emberandfrost:charolite_shard']
-            ]]]]]]
-        ])
+        writeJson('data/emberandfrost/loot_table/blocks/charolite_ore.json', oreLoot('charolite_ore', 'charolite_shard'))
         writeJson('assets/emberandfrost/blockstates/charolite_ore.json', [variants:['':[model:'emberandfrost:block/charolite_ore']]])
         writeJson('assets/emberandfrost/models/block/charolite_ore.json', [parent:'minecraft:block/cube_all', textures:[all:'minecraft:block/amethyst_block']])
         // Natural ore generation in the specified height bands.
