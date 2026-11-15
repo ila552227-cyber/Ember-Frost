@@ -69,6 +69,71 @@ tasks.register('generateEmberFrostResources') {
     outputs.dir(emberGeneratedResources)
     doLast {
         def root = emberGeneratedResources.get().asFile
+        // Generate crisp 16x16 pixel-art textures for every custom material and equipment piece.
+        def palettes = [
+            cinder: [[45,31,29],[176,63,35],[255,119,45],[255,196,90]],
+            cryolite: [[24,54,83],[62,148,190],[139,222,242],[225,251,255]],
+            ashen: [[48,48,51],[112,111,108],[177,174,164],[225,220,205]],
+            magma: [[75,27,14],[184,55,18],[245,111,20],[255,211,69]],
+            charolite: [[46,25,68],[112,61,155],[190,127,224],[235,208,255]]
+        ]
+        def writeTexture = { String relative, String material, String kind ->
+            def pal = palettes[material]
+            def image = new java.awt.image.BufferedImage(16, 16, java.awt.image.BufferedImage.TYPE_INT_ARGB)
+            def rgb = { c -> (255 << 24) | (c[0] << 16) | (c[1] << 8) | c[2] }
+            def px = { int x, int y, c -> if (x >= 0 && x < 16 && y >= 0 && y < 16) image.setRGB(x, y, rgb(c)) }
+            if (kind == 'ore') {
+                for (int y=0; y<16; y++) for (int x=0; x<16; x++) {
+                    def n = (x*13+y*7+x*y*3)%11
+                    px(x,y,n<3 ? pal[0].collect{Math.max(0,it-10)} : [91,86,79])
+                }
+                def random = new java.util.Random(material.hashCode())
+                13.times {
+                    int x=random.nextInt(14)+1, y=random.nextInt(14)+1
+                    def c=pal[[1,1,2,3][random.nextInt(4)]]
+                    px(x,y,c); if (x<15) px(x+1,y,c); if (y<15) px(x,y+1,c)
+                    if (x>0) px(x-1,y,pal[0])
+                }
+            } else if (kind == 'ingot' || kind == 'raw') {
+                if (kind == 'ingot') {
+                    [[3,6,pal[1]],[4,5,pal[3]],[5,4,pal[3]],[6,4,pal[3]],[7,3,pal[3]],[8,3,pal[3]],[9,3,pal[2]],[10,4,pal[2]],[11,4,pal[2]],[12,5,pal[2]],[13,6,pal[1]],[13,7,pal[1]],[12,8,pal[2]],[11,9,pal[2]],[10,10,pal[2]],[9,11,pal[1]],[8,12,pal[1]],[7,12,pal[1]],[6,13,pal[1]],[5,12,pal[1]],[4,11,pal[1]],[3,10,pal[1]],[2,9,pal[1]]].each{a->px(a[0],a[1],a[2])}
+                } else {
+                    [[3,8,pal[1]],[4,6,pal[1]],[5,4,pal[3]],[7,3,pal[3]],[9,4,pal[2]],[11,5,pal[2]],[13,7,pal[1]],[14,9,pal[1]],[13,11,pal[2]],[11,12,pal[2]],[9,13,pal[1]],[6,12,pal[1]],[4,11,pal[1]],[5,8,pal[3]],[8,7,pal[3]],[10,9,pal[3]]].each{a->px(a[0],a[1],a[2])}
+                }
+            } else if (kind == 'shard') {
+                [[7,2,pal[3]],[8,3,pal[3]],[10,4,pal[3]],[11,5,pal[2]],[10,7,pal[2]],[9,9,pal[2]],[8,11,pal[1]],[6,13,pal[1]],[4,10,pal[1]],[5,7,pal[2]],[6,5,pal[3]],[7,4,pal[3]]].each{a->px(a[0],a[1],a[2])}
+            } else {
+                def g = image.createGraphics()
+                g.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_OFF)
+                def poly = { int[] xs, int[] ys, c -> g.setColor(new java.awt.Color(c[0],c[1],c[2],255)); g.fillPolygon(xs,ys,xs.length) }
+                def line = { int x1,int y1,int x2,int y2,c,int width=2 -> g.setColor(new java.awt.Color(c[0],c[1],c[2],255)); g.setStroke(new java.awt.BasicStroke(width)); g.drawLine(x1,y1,x2,y2) }
+                if (kind=='helmet') { poly([3,4,7,11,13,13,10,6,3] as int[],[7,3,1,2,6,10,9,9,11] as int[],pal[1]); line(5,7,11,7,pal[3],2) }
+                else if (kind=='chestplate') { poly([4,7,9,12,15,12,12,4,4,1] as int[],[2,3,3,2,5,8,14,14,8,5] as int[],pal[1]); line(4,5,8,7,pal[3]); line(8,7,12,5,pal[3]) }
+                else if (kind=='leggings') { poly([3,13,12,10,7,7,5,2,4] as int[],[2,2,7,14,14,8,14,14,7] as int[],pal[1]); line(4,4,12,4,pal[3]) }
+                else if (kind=='boots') { poly([3,7,7,5,2,1] as int[],[2,2,10,12,12,10] as int[],pal[1]); poly([9,13,13,15,14,9] as int[],[2,2,10,11,13,12] as int[],pal[2]) }
+                else {
+                    line(4,13,12,4,[75,52,39],2)
+                    if(kind=='sword') { line(4,13,12,3,pal[1],3); line(10,4,13,1,pal[3],2); line(3,12,6,14,pal[3],2) }
+                    else if(kind=='pickaxe') { line(4,6,12,3,pal[1],3); line(4,6,3,3,pal[3],2); line(12,3,14,5,pal[2],2) }
+                    else if(kind=='axe') { poly([7,13,14,9,7] as int[],[3,2,6,8,6] as int[],pal[1]) }
+                    else if(kind=='shovel') { poly([10,14,12,8] as int[],[2,4,8,7] as int[],pal[1]) }
+                    else if(kind=='hoe') { line(8,8,13,3,pal[1],2); line(10,2,15,4,pal[3],2) }
+                }
+                g.dispose()
+            }
+            def target = new File(root, "assets/emberandfrost/textures/${relative}.png")
+            target.parentFile.mkdirs()
+            javax.imageio.ImageIO.write(image, 'png', target)
+        }
+        palettes.keySet().each { mat ->
+            writeTexture("item/${mat}_ingot", mat, 'ingot')
+            writeTexture("item/raw_${mat}", mat, 'raw')
+            writeTexture("block/${mat}_ore", mat, 'ore')
+            if (mat != 'charolite') ['helmet','chestplate','leggings','boots','sword','pickaxe','axe','shovel','hoe'].each { piece ->
+                writeTexture("item/${mat}_${piece}", mat, piece)
+            }
+        }
+        writeTexture('item/charolite_shard','charolite','shard')
         def writeJson = { String relativePath, Object value ->
             if (!file("src/main/resources/${relativePath}").exists()) {
                 def target = new File(root, relativePath)
@@ -94,15 +159,15 @@ tasks.register('generateEmberFrostResources') {
             [id:'magma', ru:'Магмовый', ing:'magma_ingot', ore:'magma_ore', catalyst:'minecraft:fire_charge']
         ]
         def pieces = [
-            [id:'helmet', ru:'шлем', pattern:['AAA','A A','   '], texture:'minecraft:item/diamond_helmet'],
-            [id:'chestplate', ru:'нагрудник', pattern:['A A','ABA','AAA'], texture:'minecraft:item/diamond_chestplate'],
-            [id:'leggings', ru:'поножи', pattern:['AAA','A A','A A'], texture:'minecraft:item/diamond_leggings'],
-            [id:'boots', ru:'ботинки', pattern:['A A','A A','   '], texture:'minecraft:item/diamond_boots'],
-            [id:'sword', ru:'меч', pattern:['A','A','B'], texture:'minecraft:item/iron_sword', handheld:true],
-            [id:'pickaxe', ru:'кирка', pattern:['AAA',' B ',' B '], texture:'minecraft:item/iron_pickaxe', handheld:true],
-            [id:'axe', ru:'топор', pattern:['AA','AB',' B'], texture:'minecraft:item/iron_axe', handheld:true],
-            [id:'shovel', ru:'лопата', pattern:['A','B','B'], texture:'minecraft:item/iron_shovel', handheld:true],
-            [id:'hoe', ru:'мотыга', pattern:['AA',' B',' B'], texture:'minecraft:item/iron_hoe', handheld:true]
+            [id:'helmet', ru:'шлем', pattern:['AAA','A A','   '],
+            [id:'chestplate', ru:'нагрудник', pattern:['A A','ABA','AAA']],
+            [id:'leggings', ru:'поножи', pattern:['AAA','A A','A A']],
+            [id:'boots', ru:'ботинки', pattern:['A A','A A','   '],
+            [id:'sword', ru:'меч', pattern:['A','A','B'], handheld:true],
+            [id:'pickaxe', ru:'кирка', pattern:['AAA',' B ',' B '], handheld:true],
+            [id:'axe', ru:'топор', pattern:['AA','AB',' B'], handheld:true],
+            [id:'shovel', ru:'лопата', pattern:['A','B','B'], handheld:true],
+            [id:'hoe', ru:'мотыга', pattern:['AA',' B',' B'], handheld:true]
         ]
         def ru = [
             'item.emberandfrost.cinder_ingot':'Слиток Углеруна',
@@ -137,7 +202,7 @@ tasks.register('generateEmberFrostResources') {
                 if (p.handheld) key.B = [item:'minecraft:stick']
                 if (p.id == 'chestplate') key.B = [item:s.catalyst]
                 writeJson("data/emberandfrost/recipe/${name}.json", [type:'minecraft:crafting_shaped', pattern:p.pattern, key:key, result:[id:"emberandfrost:${name}"]])
-                writeJson("assets/emberandfrost/models/item/${name}.json", [parent:(p.handheld ? 'minecraft:item/handheld' : 'minecraft:item/generated'), textures:[layer0:p.texture]])
+                writeJson("assets/emberandfrost/models/item/${name}.json", [parent:(p.handheld ? 'minecraft:item/handheld' : 'minecraft:item/generated'), textures:[layer0:"emberandfrost:item/${name}"]])
                 writeJson("assets/emberandfrost/items/${name}.json", [model:[type:'minecraft:model', model:"emberandfrost:item/${name}"]])
                 ru["item.emberandfrost.${name}"] = "${s.ru} ${p.ru}"
                 en["item.emberandfrost.${name}"] = "${s.id.capitalize()} ${p.id.capitalize()}"
@@ -146,12 +211,13 @@ tasks.register('generateEmberFrostResources') {
             writeJson("data/emberandfrost/loot_table/blocks/${s.ore}.json", oreLoot(s.ore, "raw_${s.id}"))
             writeJson("assets/emberandfrost/blockstates/${s.ore}.json", [variants:['':[model:"emberandfrost:block/${s.ore}"]]])
             def texture = s.id == 'magma' ? 'netherrack' : (s.id == 'cryolite' ? 'packed_ice' : (s.id == 'ashen' ? 'blackstone' : 'deepslate'))
-            writeJson("assets/emberandfrost/models/block/${s.ore}.json", [parent:'minecraft:block/cube_all', textures:[all:"minecraft:block/${texture}"]])
+            writeJson("assets/emberandfrost/models/block/${s.ore}.json", [parent:'minecraft:block/cube_all', textures:[all:"emberandfrost:block/${s.ore}"]])
             writeJson("data/emberandfrost/tags/item/repairs_${s.id}.json", [replace:false, values:["emberandfrost:${s.ing}"]])
         }
         writeJson('data/emberandfrost/tags/item/repairs_armor.json', [replace:false, values:['emberandfrost:cinder_ingot','emberandfrost:cryolite_ingot','emberandfrost:ashen_ingot','emberandfrost:magma_ingot']])
         ['cinder_ingot','raw_cinder','cryolite_ingot','raw_cryolite','ashen_ingot','raw_ashen','magma_ingot','raw_magma','charolite_shard'].each { item ->
             writeJson("assets/emberandfrost/items/${item}.json", [model:[type:'minecraft:model', model:"emberandfrost:item/${item}"]])
+            writeJson("assets/emberandfrost/models/item/${item}.json", [parent:'minecraft:item/generated', textures:[layer0:"emberandfrost:item/${item}"]])
         }
         ['cinder_ore','cryolite_ore','ashen_ore','magma_ore','charolite_ore'].each { ore ->
             writeJson("assets/emberandfrost/items/${ore}.json", [model:[type:'minecraft:model', model:"emberandfrost:block/${ore}"]])
@@ -172,7 +238,7 @@ tasks.register('generateEmberFrostResources') {
         // Charolite is a rare overworld ore; it drops shards unless mined with Silk Touch.
         writeJson('data/emberandfrost/loot_table/blocks/charolite_ore.json', oreLoot('charolite_ore', 'charolite_shard'))
         writeJson('assets/emberandfrost/blockstates/charolite_ore.json', [variants:['':[model:'emberandfrost:block/charolite_ore']]])
-        writeJson('assets/emberandfrost/models/block/charolite_ore.json', [parent:'minecraft:block/cube_all', textures:[all:'minecraft:block/amethyst_block']])
+        writeJson('assets/emberandfrost/models/block/charolite_ore.json', [parent:'minecraft:block/cube_all', textures:[all:'emberandfrost:block/charolite_ore']])
         // Natural ore generation in the specified height bands.
         def ores = [
             // Cinder is the Nether-side Carbon Abyss material; keep its generation in the Nether.
