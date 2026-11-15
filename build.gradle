@@ -303,7 +303,7 @@ tasks.register('generateEmberFrostResources') {
             def target = new File(root,path)
             target.parentFile.mkdirs()
             def img = new java.awt.image.BufferedImage(16,16,java.awt.image.BufferedImage.TYPE_INT_ARGB)
-            def put = { int x,int y,int col -> if(x>=0&&x<16&&y>=0&&y<16) img.setRGB(x,y,col) }
+            def put = { int x,int y,long col -> if(x>=0&&x<16&&y>=0&&y<16) img.setRGB(x,y,(int)col) }
             def seed = path.hashCode()
             def noise = { int x,int y -> int n=x*374761393+y*668265263+seed; n=(n^(n>>13))*1274126177; (n^(n>>16))&0x7fffffff }
             int hi=palette[0], mid=palette[1], lo=palette[2]
