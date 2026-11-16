@@ -52,5 +52,6 @@
   "block.emberandfrost.charolite_ore": "Чаролитовая руда",
   "block.emberandfrost.ash_block": "Пепельный блок",
   "block.emberandfrost.cinder_block": "Блок углеруна",
-  "block.emberandfrost.charolite_enchanting_table": "Чаролитовый стол зачарования"
+  "block.emberandfrost.charolite_enchanting_table": "Чаролитовый стол зачарования",
+  "container.emberandfrost.charolite_enchanting": "Чаролитовое зачарование"
 }
