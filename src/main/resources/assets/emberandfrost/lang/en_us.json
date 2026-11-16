@@ -49,5 +49,6 @@
   "block.emberandfrost.cryolite_ore": "Cryolite Ore",
   "block.emberandfrost.ashen_ore": "Ashen Ore",
   "block.emberandfrost.magma_ore": "Magma Ore",
-  "block.emberandfrost.charolite_ore": "Charolite Ore"
+  "block.emberandfrost.charolite_ore": "Charolite Ore",
+  "block.emberandfrost.ash_block": "Ash Block",
 }
