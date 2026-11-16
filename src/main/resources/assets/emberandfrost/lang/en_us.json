@@ -52,5 +52,6 @@
   "block.emberandfrost.charolite_ore": "Charolite Ore",
   "block.emberandfrost.ash_block": "Ash Block",
   "block.emberandfrost.cinder_block": "Cinder Block",
-  "block.emberandfrost.charolite_enchanting_table": "Charolite Enchanting Table"
+  "block.emberandfrost.charolite_enchanting_table": "Charolite Enchanting Table",
+  "container.emberandfrost.charolite_enchanting": "Charolite Enchanting"
 }
