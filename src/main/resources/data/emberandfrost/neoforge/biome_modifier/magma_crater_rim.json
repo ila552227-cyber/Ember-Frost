@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#emberandfrost:magma_crater",
+  "features": "emberandfrost:magma_crater_rim",
+  "step": "local_modifications"
+}
