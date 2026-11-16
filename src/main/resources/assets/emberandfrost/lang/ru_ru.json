@@ -49,5 +49,6 @@
   "block.emberandfrost.cryolite_ore": "Криолитовая руда",
   "block.emberandfrost.ashen_ore": "Пепельная руда",
   "block.emberandfrost.magma_ore": "Магмовая руда",
-  "block.emberandfrost.charolite_ore": "Чаролитовая руда"
+  "block.emberandfrost.charolite_ore": "Чаролитовая руда",
+  "block.emberandfrost.ash_block": "Пепельный блок",
 }
