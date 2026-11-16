@@ -1,6 +1,7 @@
 package com.emberandfrost;
 
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import terrablender.api.Regions;
@@ -13,6 +14,7 @@ public final class EmberAndFrost {
         ModBlocks.BLOCKS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
         ModCreativeTabs.TABS.register(modEventBus);
+        NeoForge.EVENT_BUS.addListener(CharoliteEnchantingEvents::onEnchantmentLevelSet);
         modEventBus.addListener(this::commonSetup);
     }
     private void commonSetup(final FMLCommonSetupEvent event) {
