@@ -19,7 +19,11 @@
       "type": "minecraft:matching_blocks",
       "blocks": [
         "minecraft:stone",
-        "minecraft:deepslate"
+        "minecraft:deepslate",
+        "minecraft:grass_block",
+        "minecraft:dirt",
+        "minecraft:coarse_dirt",
+        "minecraft:gravel"
       ]
     }
   }
