@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#emberandfrost:magma_crater",
+  "features": "minecraft:lake_lava_surface",
+  "step": "lakes"
+}
