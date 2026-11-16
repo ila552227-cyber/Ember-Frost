@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "emberandfrost:cinder_block"
+    }
+  ],
+  "result": {
+    "id": "emberandfrost:cinder_ingot",
+    "count": 9
+  }
+}
