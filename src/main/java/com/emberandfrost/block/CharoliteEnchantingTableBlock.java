@@ -21,7 +21,7 @@ public class CharoliteEnchantingTableBlock extends Block {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (level.isClientSide) return InteractionResult.SUCCESS;
+        if (level.isClientSide()) return InteractionResult.SUCCESS;
         MenuProvider provider = new SimpleMenuProvider(
                 (containerId, inventory, user) -> new CharoliteEnchantmentMenu(containerId, inventory, level, pos),
                 TITLE
