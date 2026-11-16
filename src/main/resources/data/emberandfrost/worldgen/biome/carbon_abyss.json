@@ -1,19 +1,24 @@
 {
-  "carvers": {},
+  "carvers": [
+    "minecraft:nether_cave"
+  ],
   "downfall": 0,
   "effects": {
-    "fog_color": 3425078,
-    "sky_color": 4545347,
-    "water_color": 2505259,
-    "water_fog_color": 1315860,
-    "mood_sound": {
-      "block_search_extent": 8,
-      "offset": 2,
-      "sound": "minecraft:ambient.cave",
-      "tick_delay": 6000
-    }
+    "water_color": "#263a2b"
   },
-  "features": [],
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ],
   "has_precipitation": false,
   "spawners": {
     "ambient": [],
@@ -45,5 +50,22 @@
     "water_creature": []
   },
   "spawn_costs": {},
-  "temperature": 2
+  "temperature": 2,
+  "attributes": {
+    "minecraft:visual/fog_color": "#344336",
+    "minecraft:visual/sky_color": "#455b43",
+    "minecraft:audio/ambient_sounds": {
+      "loop": "minecraft:ambient.nether_wastes.loop",
+      "mood": {
+        "block_search_extent": 8,
+        "offset": 2,
+        "sound": "minecraft:ambient.nether_wastes.mood",
+        "tick_delay": 6000
+      },
+      "additions": {
+        "sound": "minecraft:ambient.nether_wastes.additions",
+        "tick_chance": 0.0111
+      }
+    }
+  }
 }
