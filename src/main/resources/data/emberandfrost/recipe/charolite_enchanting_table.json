@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "EEE"
+  ],
+  "key": {
+    "A": {
+      "item": "emberandfrost:charolite_shard"
+    },
+    "B": {
+      "item": "minecraft:book"
+    },
+    "C": {
+      "item": "emberandfrost:cinder_block"
+    },
+    "D": {
+      "item": "minecraft:enchanting_table"
+    },
+    "E": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "result": {
+    "id": "emberandfrost:charolite_enchanting_table"
+  }
+}
