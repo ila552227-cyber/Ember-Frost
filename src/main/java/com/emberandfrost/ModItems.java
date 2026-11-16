@@ -64,6 +64,8 @@ public final class ModItems {
 
     static {
         ITEMS.registerSimpleBlockItem("ash_block", ModBlocks.ASH_BLOCK);
+        ITEMS.registerSimpleBlockItem("cinder_block", ModBlocks.CINDER_BLOCK);
+        ITEMS.registerSimpleBlockItem("charolite_enchanting_table", ModBlocks.CHAROLITE_ENCHANTING_TABLE);
         ITEMS.registerSimpleBlockItem("cinder_ore", ModBlocks.CINDER_ORE);
         ITEMS.registerSimpleBlockItem("cryolite_ore", ModBlocks.CRYOLITE_ORE);
         ITEMS.registerSimpleBlockItem("ashen_ore", ModBlocks.ASHEN_ORE);
