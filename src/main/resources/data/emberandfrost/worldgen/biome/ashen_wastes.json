@@ -1,39 +1,61 @@
 {
-  "attributes": {
-    "minecraft:visual/sky_color": 7829367
-  },
-  "carvers": [],
+  "carvers": {},
   "downfall": 0,
   "effects": {
-    "water_color": 5590600,
-    "foliage_color": 7828333,
-    "grass_color": 7828333,
+    "fog_color": 6579300,
     "sky_color": 7829367,
-    "fog_color": 7828333
+    "water_color": 5590600,
+    "water_fog_color": 2631720,
+    "mood_sound": {
+      "block_search_extent": 8,
+      "offset": 2,
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000
+    }
   },
-  "features": [
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    []
-  ],
+  "features": [],
   "has_precipitation": false,
-  "temperature": 2,
   "spawners": {
     "ambient": [],
     "axolotls": [],
     "creature": [],
+    "misc": [],
+    "monster": [
+      {
+        "type": "minecraft:ghast",
+        "weight": 50,
+        "minCount": 1,
+        "maxCount": 1
+      },
+      {
+        "type": "minecraft:zombified_piglin",
+        "weight": 100,
+        "minCount": 4,
+        "maxCount": 4
+      },
+      {
+        "type": "minecraft:magma_cube",
+        "weight": 2,
+        "minCount": 4,
+        "maxCount": 4
+      },
+      {
+        "type": "minecraft:enderman",
+        "weight": 1,
+        "minCount": 4,
+        "maxCount": 4
+      },
+      {
+        "type": "minecraft:piglin",
+        "weight": 15,
+        "minCount": 4,
+        "maxCount": 4
+      }
+    ],
     "underground_water_creature": [],
-    "water_creature": [],
     "water_ambient": [],
-    "monster": []
+    "water_creature": []
   },
-  "spawn_costs": {}
+  "spawn_costs": {},
+  "temperature": 2
 }

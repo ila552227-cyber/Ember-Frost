@@ -1,39 +1,49 @@
 {
-  "attributes": {
-    "minecraft:visual/sky_color": 4545347
-  },
-  "carvers": [],
+  "carvers": {},
   "downfall": 0,
   "effects": {
-    "water_color": 2505259,
-    "foliage_color": 3492402,
-    "grass_color": 3492402,
+    "fog_color": 3425078,
     "sky_color": 4545347,
-    "fog_color": 3425078
+    "water_color": 2505259,
+    "water_fog_color": 1315860,
+    "mood_sound": {
+      "block_search_extent": 8,
+      "offset": 2,
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000
+    }
   },
-  "features": [
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    []
-  ],
+  "features": [],
   "has_precipitation": false,
-  "temperature": 2,
   "spawners": {
     "ambient": [],
     "axolotls": [],
     "creature": [],
+    "misc": [],
+    "monster": [
+      {
+        "type": "minecraft:skeleton",
+        "weight": 20,
+        "minCount": 5,
+        "maxCount": 5
+      },
+      {
+        "type": "minecraft:ghast",
+        "weight": 50,
+        "minCount": 4,
+        "maxCount": 4
+      },
+      {
+        "type": "minecraft:enderman",
+        "weight": 1,
+        "minCount": 4,
+        "maxCount": 4
+      }
+    ],
     "underground_water_creature": [],
-    "water_creature": [],
     "water_ambient": [],
-    "monster": []
+    "water_creature": []
   },
-  "spawn_costs": {}
+  "spawn_costs": {},
+  "temperature": 2
 }
