@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#emberandfrost:ashen_wastes",
+  "features": "emberandfrost:ashen_dark_patch",
+  "step": "local_modifications"
+}
