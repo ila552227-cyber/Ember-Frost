@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "AAA",
+    "AAA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "emberandfrost:cinder_ingot"
+    }
+  },
+  "result": {
+    "id": "emberandfrost:cinder_block"
+  }
+}
