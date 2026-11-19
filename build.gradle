@@ -269,9 +269,14 @@ tasks.register('generateEmberFrostResources') {
             [id:'charolite', block:'charolite_ore', min:-50, max:0, count:3, size:4, biome:'#minecraft:is_overworld', replace:'minecraft:stone_ore_replaceables']
         ]
         writeJson('data/minecraft/tags/block/mineable/pickaxe.json', [replace:false, values:['emberandfrost:cinder_ore','emberandfrost:cryolite_ore','emberandfrost:ashen_ore','emberandfrost:magma_ore','emberandfrost:charolite_ore']])
-        writeJson('data/minecraft/tags/block/needs_iron_tool.json', [replace:false, values:['emberandfrost:cinder_ore']])
-        writeJson('data/minecraft/tags/block/needs_diamond_tool.json', [replace:false, values:['emberandfrost:cryolite_ore','emberandfrost:ashen_ore','emberandfrost:magma_ore','emberandfrost:charolite_ore']])
-        writeJson('data/minecraft/tags/block/incorrect_for_diamond_tool.json', [replace:false, values:['emberandfrost:magma_ore','emberandfrost:charolite_ore']])
+        // Vanilla diamond tools can mine only the first ore in the progression.
+        // The custom materials use their own incorrect-for-drops tags below.
+        writeJson('data/minecraft/tags/block/needs_diamond_tool.json', [replace:false, values:['emberandfrost:cinder_ore','emberandfrost:cryolite_ore','emberandfrost:ashen_ore','emberandfrost:magma_ore','emberandfrost:charolite_ore']])
+        writeJson('data/minecraft/tags/block/incorrect_for_diamond_tool.json', [replace:false, values:['emberandfrost:cryolite_ore','emberandfrost:ashen_ore','emberandfrost:magma_ore','emberandfrost:charolite_ore']])
+        writeJson('data/minecraft/tags/block/incorrect_for_netherite_tool.json', [replace:false, values:['emberandfrost:charolite_ore']])
+        writeJson('data/emberandfrost/tags/block/incorrect_for_cinder_tool.json', [replace:false, values:['emberandfrost:ashen_ore','emberandfrost:magma_ore','emberandfrost:charolite_ore']])
+        writeJson('data/emberandfrost/tags/block/incorrect_for_cryolite_tool.json', [replace:false, values:['emberandfrost:magma_ore','emberandfrost:charolite_ore']])
+        writeJson('data/emberandfrost/tags/block/incorrect_for_ashen_tool.json', [replace:false, values:['emberandfrost:charolite_ore']])
         ores.each { ore ->
             def target = [target:[predicate_type:'minecraft:tag_match', tag:ore.replace], state:[Name:"emberandfrost:${ore.block}"]]
             writeJson("data/emberandfrost/worldgen/configured_feature/${ore.id}_ore.json", [
