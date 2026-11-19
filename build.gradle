@@ -208,6 +208,20 @@ tasks.register('generateEmberFrostResources') {
             writeJson("assets/emberandfrost/models/block/${s.ore}.json", [parent:'minecraft:block/cube_all', textures:[all:"minecraft:block/${texture}"]])
             writeJson("data/emberandfrost/tags/item/repairs_${s.id}.json", [replace:false, values:["emberandfrost:${s.ing}"]])
         }
+        // Custom Eye of Ender recipe for the Ember & Frost progression.
+        writeJson('data/emberandfrost/recipe/eye_of_ender.json', [
+            type:'minecraft:crafting_shaped', category:'misc',
+            pattern:['ABA','CDE','AFA'],
+            key:[
+                A:'minecraft:blaze_powder',
+                B:'emberandfrost:cinder_ingot',
+                C:'emberandfrost:cryolite_ingot',
+                D:'minecraft:ender_pearl',
+                E:'emberandfrost:ashen_ingot',
+                F:'emberandfrost:magma_ingot'
+            ],
+            result:[id:'minecraft:ender_eye', count:1]
+        ])
         writeJson('data/emberandfrost/tags/item/repairs_armor.json', [replace:false, values:['emberandfrost:cinder_ingot','emberandfrost:cryolite_ingot','emberandfrost:ashen_ingot','emberandfrost:magma_ingot']])
         ['cinder_ingot','raw_cinder','cryolite_ingot','raw_cryolite','ashen_ingot','raw_ashen','magma_ingot','raw_magma','charolite_shard'].each { item ->
             writeJson("assets/emberandfrost/items/${item}.json", [model:[type:'minecraft:model', model:"emberandfrost:item/${item}"]])
