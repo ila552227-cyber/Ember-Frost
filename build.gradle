@@ -179,7 +179,7 @@ tasks.register('generateEmberFrostResources') {
             pieces.each { p ->
                 def name = "${s.id}_${p.id}"
                 def key = [A:"emberandfrost:${s.ing}", B:(p.id == 'chestplate' ? "emberandfrost:${s.ore}" : 'minecraft:stick')]
-                writeJson("data/emberandfrost/recipe/${name}.json", [type:'minecraft:crafting_shaped', pattern:p.pattern, key:key, result:[id:"emberandfrost:${name}"]])
+                writeJson("data/emberandfrost/recipes/${name}.json", [type:'minecraft:crafting_shaped', pattern:p.pattern, key:key, result:[id:"emberandfrost:${name}"]])
                 writeJson("assets/emberandfrost/models/item/${name}.json", [parent:(p.handheld ? 'minecraft:item/handheld' : 'minecraft:item/generated'), textures:[layer0:"emberandfrost:item/${name}"]])
                 writeJson("assets/emberandfrost/items/${name}.json", [model:[type:'minecraft:model', model:"emberandfrost:item/${name}"]])
                 ru["item.emberandfrost.${name}"] = "${s.ru} ${p.ru}"
@@ -194,7 +194,7 @@ tasks.register('generateEmberFrostResources') {
             def projectileTypes = [fire:[ingredient:'minecraft:gunpowder', ru:'Огненный снаряд', en:'Fire Projectile'], slow:[ingredient:'minecraft:snowball', ru:'Ледяной снаряд', en:'Frost Projectile'], knockback:[ingredient:'minecraft:feather', ru:'Отбрасывающий снаряд', en:'Knockback Projectile'], poison:[ingredient:'minecraft:spider_eye', ru:'Ядовитый снаряд', en:'Poison Projectile']]
             projectileTypes.each { type, data ->
                 def id = "${s.id}_${type}_projectile"
-                writeJson("data/emberandfrost/recipe/${id}.json", [type:'minecraft:crafting_shaped', pattern:[' A ','ABA',' A '], key:[A:"emberandfrost:${s.ing}", B:data.ingredient], result:[id:"emberandfrost:${id}", count:1]])
+                writeJson("data/emberandfrost/recipes/${id}.json", [type:'minecraft:crafting_shaped', pattern:[' A ','ABA',' A '], key:[A:"emberandfrost:${s.ing}", B:data.ingredient], result:[id:"emberandfrost:${id}", count:1]])
                 writeJson("assets/emberandfrost/models/item/${id}.json", [parent:'minecraft:item/generated', textures:[layer0:"emberandfrost:item/${id}"]])
                 writeJson("assets/emberandfrost/items/${id}.json", [model:[type:'minecraft:model', model:"emberandfrost:item/${id}"]])
                 ru["item.emberandfrost.${id}"] = "${s.ru}: ${data.ru}"
@@ -221,7 +221,7 @@ tasks.register('generateEmberFrostResources') {
         // Smelting and blasting for the four raw materials.
         sets.each { s ->
             ['smelting':200, 'blasting':100].each { recipeType, ticks ->
-                writeJson("data/emberandfrost/recipe/${s.id}_${recipeType}.json", [
+                writeJson("data/emberandfrost/recipes/${s.id}_${recipeType}.json", [
                     type:"minecraft:${recipeType}", category:'misc', cookingtime:ticks,
                     experience:0.7, ingredient:[item:"emberandfrost:raw_${s.id}"],
                     result:[id:"emberandfrost:${s.ing}"]
