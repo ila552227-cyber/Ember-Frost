@@ -50,9 +50,14 @@ public final class ModItems {
         return new ToolMaterial(incorrect, durability, speed, attack, 18, repairTag(repair));
     }
 
-    private static final ToolMaterial CINDER_TOOL = tool(450, 7.0F, 2.5F, BlockTags.INCORRECT_FOR_IRON_TOOL, "repairs_cinder");
-    private static final ToolMaterial CRYOLITE_TOOL = tool(900, 9.0F, 3.0F, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, "repairs_cryolite");
-    private static final ToolMaterial ASHEN_TOOL = tool(1100, 8.5F, 3.2F, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, "repairs_ashen");
+    private static TagKey<net.minecraft.world.level.block.Block> incorrectFor(String name) {
+        return TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(EmberAndFrost.MOD_ID, name));
+    }
+
+    // Each custom pickaxe is blocked only by ores above its own progression tier.
+    private static final ToolMaterial CINDER_TOOL = tool(450, 7.0F, 2.5F, incorrectFor("incorrect_for_cinder_tool"), "repairs_cinder");
+    private static final ToolMaterial CRYOLITE_TOOL = tool(900, 9.0F, 3.0F, incorrectFor("incorrect_for_cryolite_tool"), "repairs_cryolite");
+    private static final ToolMaterial ASHEN_TOOL = tool(1100, 8.5F, 3.2F, incorrectFor("incorrect_for_ashen_tool"), "repairs_ashen");
     private static final ToolMaterial MAGMA_TOOL = tool(1600, 10.0F, 4.0F, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, "repairs_magma");
 
     public static final DeferredItem<Item> CINDER_INGOT = ITEMS.registerSimpleItem("cinder_ingot");
