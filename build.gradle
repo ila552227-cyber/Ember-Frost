@@ -83,6 +83,10 @@ tasks.register('generateEmberFrostResources') {
             ]
             def silkEntry = [type:'minecraft:item', name:"emberandfrost:${oreName}", conditions:[silkCondition]]
             def normalEntry = [type:'minecraft:item', name:"emberandfrost:${dropName}"]
+            // Cryolite ore has a 50% chance to drop one raw Cryolite; otherwise it drops nothing.
+            if (oreName == 'cryolite_ore') {
+                normalEntry.conditions = [[condition:'minecraft:random_chance', chance:0.5]]
+            }
             def alternatives = [type:'minecraft:alternatives', children:[silkEntry, normalEntry]]
             def pool = [rolls:1, entries:[alternatives]]
             [type:'minecraft:block', pools:[pool]]
