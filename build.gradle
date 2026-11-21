@@ -291,13 +291,15 @@ tasks.register('generateEmberFrostResources') {
         writeJson('data/minecraft/tags/block/mineable/pickaxe.json', [replace:false, values:['emberandfrost:cinder_ore','emberandfrost:cryolite_ore','emberandfrost:ashen_ore','emberandfrost:magma_ore','emberandfrost:charolite_ore']])
         // Vanilla diamond tools can mine only the first ore in the progression.
         // The custom materials use their own incorrect-for-drops tags below.
-        writeJson('data/minecraft/tags/block/needs_diamond_tool.json', [replace:false, values:['emberandfrost:cinder_ore','emberandfrost:cryolite_ore','emberandfrost:ashen_ore','emberandfrost:magma_ore','emberandfrost:charolite_ore']])
-        writeJson('data/minecraft/tags/block/incorrect_for_diamond_tool.json', [replace:false, values:['emberandfrost:cryolite_ore','emberandfrost:ashen_ore','emberandfrost:magma_ore','emberandfrost:charolite_ore']])
+        // Tier requirements: Cinder needs iron; Cryolite and Ashen need diamond;
+        // Magma and Charolite reject diamond, so netherite can harvest them.
+        writeJson('data/minecraft/tags/block/needs_iron_tool.json', [replace:false, values:['emberandfrost:cinder_ore']])
+        writeJson('data/minecraft/tags/block/needs_diamond_tool.json', [replace:false, values:['emberandfrost:cryolite_ore','emberandfrost:ashen_ore','emberandfrost:magma_ore','emberandfrost:charolite_ore']])
+        writeJson('data/minecraft/tags/block/incorrect_for_diamond_tool.json', [replace:false, values:['emberandfrost:magma_ore','emberandfrost:charolite_ore']])
         writeJson('data/minecraft/tags/block/incorrect_for_netherite_tool.json', [replace:false, values:[]])
-        writeJson('data/emberandfrost/tags/block/incorrect_for_cinder_tool.json', [replace:false, values:['emberandfrost:ashen_ore','emberandfrost:magma_ore','emberandfrost:charolite_ore']])
-        writeJson('data/emberandfrost/tags/block/incorrect_for_cryolite_tool.json', [replace:false, values:['emberandfrost:ashen_ore','emberandfrost:magma_ore','emberandfrost:charolite_ore']])
-        writeJson('data/emberandfrost/tags/block/incorrect_for_ashen_tool.json', [replace:false, values:['emberandfrost:magma_ore','emberandfrost:charolite_ore']])
-        // Magma tools are the final tier and can mine Charolite as well as vanilla ores.
+        writeJson('data/emberandfrost/tags/block/incorrect_for_cinder_tool.json', [replace:false, values:['#minecraft:incorrect_for_iron_tool','emberandfrost:cryolite_ore','emberandfrost:ashen_ore','emberandfrost:magma_ore','emberandfrost:charolite_ore']])
+        writeJson('data/emberandfrost/tags/block/incorrect_for_cryolite_tool.json', [replace:false, values:['#minecraft:incorrect_for_diamond_tool','emberandfrost:ashen_ore','emberandfrost:magma_ore','emberandfrost:charolite_ore']])
+        writeJson('data/emberandfrost/tags/block/incorrect_for_ashen_tool.json', [replace:false, values:['#minecraft:incorrect_for_diamond_tool','emberandfrost:magma_ore','emberandfrost:charolite_ore']])
         writeJson('data/emberandfrost/tags/block/incorrect_for_magma_tool.json', [replace:false, values:[]])
         ores.each { ore ->
             def target = [target:[predicate_type:'minecraft:tag_match', tag:ore.replace], state:[Name:"emberandfrost:${ore.block}"]]
