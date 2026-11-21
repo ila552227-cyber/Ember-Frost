@@ -446,9 +446,10 @@ tasks.register('generateEmberFrostResources') {
         }
         writePixelPng('assets/emberandfrost/textures/block/cryolite_crystal.png','ingot',0x45CFF5);
         writeJson('data/emberandfrost/loot_table/blocks/cryolite_cluster.json', oreLoot('cryolite_cluster','raw_cryolite'));
-        ['cryolite_bud_small','cryolite_bud_medium','cryolite_bud_large','cryolite_geode_block'].each { id ->
-            writeJson("data/emberandfrost/loot_table/blocks/${id}.json", [type:'minecraft:block',pools:[]]);
+        ['cryolite_bud_small','cryolite_bud_medium','cryolite_bud_large'].each { id ->
+            writeJson("data/emberandfrost/loot_table/blocks/${id}.json", oreLoot(id, 'raw_cryolite'));
         }
+        writeJson('data/emberandfrost/loot_table/blocks/cryolite_geode_block.json', [type:'minecraft:block',pools:[]]);
 
         // High-detail custom ore and material textures (overwrite the old placeholder art).
         def richPalettes = [
