@@ -24,18 +24,22 @@ public final class ModBlocks {
     public static final DeferredBlock<Block> CHAROLITE_ORE = ore("charolite_ore", MapColor.COLOR_PURPLE, 5.0F);
 
     // Cryolite geode shell and four naturally growing crystal stages.
-    private static BlockBehaviour.Properties crystalProperties() {
-        return BlockBehaviour.Properties.of().mapColor(MapColor.ICE).strength(1.5F, 6.0F)
-                .sound(SoundType.AMETHYST_CLUSTER).noOcclusion().lightLevel(state -> 5);
-    }
-    public static final DeferredBlock<Block> CRYOLITE_BUD_SMALL = BLOCKS.register("cryolite_bud_small",
-            () -> new AmethystClusterBlock(3, 4, crystalProperties()));
-    public static final DeferredBlock<Block> CRYOLITE_BUD_MEDIUM = BLOCKS.register("cryolite_bud_medium",
-            () -> new AmethystClusterBlock(4, 3, crystalProperties()));
-    public static final DeferredBlock<Block> CRYOLITE_BUD_LARGE = BLOCKS.register("cryolite_bud_large",
-            () -> new AmethystClusterBlock(5, 3, crystalProperties()));
-    public static final DeferredBlock<Block> CRYOLITE_CLUSTER = BLOCKS.register("cryolite_cluster",
-            () -> new AmethystClusterBlock(7, 3, crystalProperties().lightLevel(state -> 9)));
+    public static final DeferredBlock<Block> CRYOLITE_BUD_SMALL = BLOCKS.registerBlock("cryolite_bud_small",
+            properties -> new AmethystClusterBlock(3, 4, properties),
+            properties -> properties.mapColor(MapColor.ICE).strength(1.5F, 6.0F)
+                    .sound(SoundType.AMETHYST_CLUSTER).noOcclusion().lightLevel(state -> 5));
+    public static final DeferredBlock<Block> CRYOLITE_BUD_MEDIUM = BLOCKS.registerBlock("cryolite_bud_medium",
+            properties -> new AmethystClusterBlock(4, 3, properties),
+            properties -> properties.mapColor(MapColor.ICE).strength(1.5F, 6.0F)
+                    .sound(SoundType.AMETHYST_CLUSTER).noOcclusion().lightLevel(state -> 5));
+    public static final DeferredBlock<Block> CRYOLITE_BUD_LARGE = BLOCKS.registerBlock("cryolite_bud_large",
+            properties -> new AmethystClusterBlock(5, 3, properties),
+            properties -> properties.mapColor(MapColor.ICE).strength(1.5F, 6.0F)
+                    .sound(SoundType.AMETHYST_CLUSTER).noOcclusion().lightLevel(state -> 5));
+    public static final DeferredBlock<Block> CRYOLITE_CLUSTER = BLOCKS.registerBlock("cryolite_cluster",
+            properties -> new AmethystClusterBlock(7, 3, properties),
+            properties -> properties.mapColor(MapColor.ICE).strength(1.5F, 6.0F)
+                    .sound(SoundType.AMETHYST_CLUSTER).noOcclusion().lightLevel(state -> 9));
     public static final DeferredBlock<Block> CRYOLITE_GEODE_BLOCK = BLOCKS.registerSimpleBlock("cryolite_geode_block",
             BlockBehaviour.Properties.of().mapColor(MapColor.ICE).strength(3.0F, 9.0F)
                     .requiresCorrectToolForDrops().sound(SoundType.AMETHYST));

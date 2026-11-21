@@ -33,7 +33,7 @@ jobs:
           timeout 240s gradle runServer --no-daemon 2>&1 | tee server-smoke.log
           status=${PIPESTATUS[0]}
           set -e
-          if grep -Eiq 'Failed to load registries|Errors in currently selected datapacks|Registry Loading Errors' server-smoke.log; then
+          if grep -Eiq 'Failed to load registries|Errors in currently selected datapacks|Registry Loading Errors|Block id not set|Trying to access unbound value' server-smoke.log; then
             echo "Fatal registry or datapack loading error"
             exit 1
           fi
