@@ -76,6 +76,12 @@ public final class ModItems {
         ITEMS.registerSimpleBlockItem("ashen_ore", ModBlocks.ASHEN_ORE);
         ITEMS.registerSimpleBlockItem("magma_ore", ModBlocks.MAGMA_ORE);
         ITEMS.registerSimpleBlockItem("charolite_ore", ModBlocks.CHAROLITE_ORE);
+        ITEMS.registerSimpleBlockItem("cryolite_bud_small", ModBlocks.CRYOLITE_BUD_SMALL);
+        ITEMS.registerSimpleBlockItem("cryolite_bud_medium", ModBlocks.CRYOLITE_BUD_MEDIUM);
+        ITEMS.registerSimpleBlockItem("cryolite_bud_large", ModBlocks.CRYOLITE_BUD_LARGE);
+        ITEMS.registerSimpleBlockItem("cryolite_cluster", ModBlocks.CRYOLITE_CLUSTER);
+        ITEMS.registerSimpleBlockItem("cryolite_geode_block", ModBlocks.CRYOLITE_GEODE_BLOCK);
+
     }
 
     private static void armorSet(String id, ArmorMaterial material) {

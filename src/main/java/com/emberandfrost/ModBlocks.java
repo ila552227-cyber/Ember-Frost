@@ -1,6 +1,11 @@
 package com.emberandfrost;
 
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.AmethystClusterBlock;
+import net.minecraft.world.level.block.SmallAmethystBudBlock;
+import net.minecraft.world.level.block.MediumAmethystBudBlock;
+import net.minecraft.world.level.block.LargeAmethystBudBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -13,6 +18,23 @@ public final class ModBlocks {
     public static final DeferredBlock<Block> ASHEN_ORE = ore("ashen_ore", MapColor.NETHER, 4.0F);
     public static final DeferredBlock<Block> MAGMA_ORE = ore("magma_ore", MapColor.FIRE, 5.0F);
     public static final DeferredBlock<Block> CHAROLITE_ORE = ore("charolite_ore", MapColor.COLOR_PURPLE, 5.0F);
+
+    // Cryolite geode shell and four naturally growing crystal stages.
+    private static BlockBehaviour.Properties crystalProperties() {
+        return BlockBehaviour.Properties.of().mapColor(MapColor.ICE).strength(1.5F, 6.0F)
+                .sound(SoundType.AMETHYST_CLUSTER).noOcclusion().lightLevel(state -> 5);
+    }
+    public static final DeferredBlock<Block> CRYOLITE_BUD_SMALL = BLOCKS.register("cryolite_bud_small",
+            () -> new SmallAmethystBudBlock(3, 4, crystalProperties()));
+    public static final DeferredBlock<Block> CRYOLITE_BUD_MEDIUM = BLOCKS.register("cryolite_bud_medium",
+            () -> new MediumAmethystBudBlock(4, 3, crystalProperties()));
+    public static final DeferredBlock<Block> CRYOLITE_BUD_LARGE = BLOCKS.register("cryolite_bud_large",
+            () -> new LargeAmethystBudBlock(5, 3, crystalProperties()));
+    public static final DeferredBlock<Block> CRYOLITE_CLUSTER = BLOCKS.register("cryolite_cluster",
+            () -> new AmethystClusterBlock(7, 3, crystalProperties().lightLevel(state -> 9)));
+    public static final DeferredBlock<Block> CRYOLITE_GEODE_BLOCK = BLOCKS.registerSimpleBlock("cryolite_geode_block",
+            BlockBehaviour.Properties.of().mapColor(MapColor.ICE).strength(3.0F, 9.0F)
+                    .requiresCorrectToolForDrops().sound(SoundType.AMETHYST));
 
     private static DeferredBlock<Block> ore(String name, MapColor color, float hardness) {
         return BLOCKS.registerSimpleBlock(name, BlockBehaviour.Properties.of()
