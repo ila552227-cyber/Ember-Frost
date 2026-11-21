@@ -533,7 +533,7 @@ tasks.register('generateEmberFrostResources') {
             features:'emberandfrost:cryolite_cavern', step:'underground_decoration'
         ]);
         writeJson('assets/emberandfrost/blockstates/cryolite_geode_block.json', [variants:['':[model:'emberandfrost:block/cryolite_geode_block']]]);
-        writeJson('assets/emberandfrost/models/block/cryolite_geode_block.json', [parent:'minecraft:block/cube_all', textures:[all:'minecraft:block/blue_ice']]);
+        writeJson('assets/emberandfrost/models/block/cryolite_geode_block.json', [parent:'minecraft:block/cube_all', textures:[all:'emberandfrost:block/cryolite_geode_block']]);
         ['cryolite_cluster','cryolite_bud_small','cryolite_bud_medium','cryolite_bud_large'].each { id ->
             writeJson("assets/emberandfrost/blockstates/${id}.json", [variants:['':[model:"emberandfrost:block/${id}"]]]);
             writeJson("assets/emberandfrost/models/block/${id}.json", [parent:'minecraft:block/cube', textures:[particle:'emberandfrost:block/cryolite_crystal', cross:'emberandfrost:block/cryolite_crystal']]);
@@ -612,6 +612,7 @@ tasks.register('generateEmberFrostResources') {
             javax.imageio.ImageIO.write(img,'png',target)
         }
         richTexture('assets/emberandfrost/textures/block/ash_block.png','ash',[0xFF777777,0xFF555555,0xFF383838])
+        richTexture('assets/emberandfrost/textures/block/cryolite_geode_block.png','ash',[0xFFB9F2FF,0xFF5BBCE3,0xFF174D76])
         richTexture('assets/emberandfrost/textures/block/dark_ash_block.png','ash',[0xFF666666,0xFF333333,0xFF161616])
         richTexture('assets/emberandfrost/textures/block/cinder_block.png','ash',[0xFF9BA6B5,0xFF59636F,0xFF2C333C])
         recolorTexture('src/main/texture_templates/amethyst_shard.png','assets/emberandfrost/textures/item/charolite_shard.png',[0xFF40145F,0xFF9C42D6,0xFFE9A8FF])
