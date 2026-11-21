@@ -137,6 +137,55 @@ tasks.register('generateEmberFrostResources') {
                 javax.imageio.ImageIO.write(image, 'png', target)
             }
         }
+        // Recolor the 1.21.11 vanilla diamond templates to preserve the correct armor UV layout.
+        def recolorTexture = { String templatePath, String outputPath, List palette, boolean preserveWood = false ->
+            def source = javax.imageio.ImageIO.read(file(templatePath))
+            def output = new java.awt.image.BufferedImage(source.width, source.height, java.awt.image.BufferedImage.TYPE_INT_ARGB)
+            def colors = palette.collect { color ->
+                int c = color as int
+                [((c >>> 16) & 255), ((c >>> 8) & 255), (c & 255)]
+            }
+            for (int y = 0; y < source.height; y++) {
+                for (int x = 0; x < source.width; x++) {
+                    int pixel = source.getRGB(x, y)
+                    int alpha = (pixel >>> 24) & 255
+                    if (alpha == 0) continue
+                    int red = (pixel >>> 16) & 255
+                    int green = (pixel >>> 8) & 255
+                    int blue = pixel & 255
+                    boolean wood = preserveWood && (
+                        (red == 40 && green == 30 && blue == 11) ||
+                        (red == 73 && green == 54 && blue == 21) ||
+                        (red == 104 && green == 78 && blue == 30) ||
+                        (red == 137 && green == 103 && blue == 39)
+                    )
+                    if (wood) {
+                        output.setRGB(x, y, pixel)
+                        continue
+                    }
+                    double luminance = (0.2126 * red + 0.7152 * green + 0.0722 * blue) / 255.0
+                    double position = luminance * (colors.size() - 1)
+                    int index = Math.min((int)Math.floor(position), colors.size() - 2)
+                    double blend = position - index
+                    def low = colors[index]
+                    def high = colors[index + 1]
+                    int nr = Math.max(0, Math.min(255, Math.round(low[0] * (1.0 - blend) + high[0] * blend) as int))
+                    int ng = Math.max(0, Math.min(255, Math.round(low[1] * (1.0 - blend) + high[1] * blend) as int))
+                    int nb = Math.max(0, Math.min(255, Math.round(low[2] * (1.0 - blend) + high[2] * blend) as int))
+                    output.setRGB(x, y, (alpha << 24) | (nr << 16) | (ng << 8) | nb)
+                }
+            }
+            def target = new File(root, outputPath)
+            target.parentFile.mkdirs()
+            javax.imageio.ImageIO.write(output, 'png', target)
+        }
+        def armorPalettes = [
+            cinder:[0xFF34404D,0xFF5C6B7B,0xFF9AAABC,0xFFE1EAF2],
+            cryolite:[0xFF123B60,0xFF176F9D,0xFF43B7DF,0xFFC7F7FF],
+            ashen:[0xFF30213F,0xFF59366E,0xFF9863B7,0xFFE6C5FF],
+            magma:[0xFF40150F,0xFF8F2619,0xFFE14A21,0xFFFFC978]
+        ]
+
         def sets = [
             [id:'cinder', ru:'Углерун', ing:'cinder_ingot', ore:'cinder_ore'],
             [id:'cryolite', ru:'Криолит', ing:'cryolite_ingot', ore:'cryolite_ore'],
@@ -194,8 +243,8 @@ tasks.register('generateEmberFrostResources') {
             }
             def palettes = [cinder:0xE45B2A, cryolite:0x4BA9D8, ashen:0x777777, magma:0xB52D18]
             writeJson("assets/emberandfrost/equipment/${s.id}.json", [layers:[humanoid:[[texture:"emberandfrost:${s.id}_layer_1"]], humanoid_leggings:[[texture:"emberandfrost:${s.id}_layer_1"]]]])
-            writePixelPng("assets/emberandfrost/textures/entity/equipment/humanoid/${s.id}_layer_1.png", "chestplate", palettes[s.id])
-            writePixelPng("assets/emberandfrost/textures/entity/equipment/humanoid_leggings/${s.id}_layer_1.png", "leggings", palettes[s.id])
+            recolorTexture("src/main/texture_templates/diamond_humanoid.png", "assets/emberandfrost/textures/entity/equipment/humanoid/${s.id}_layer_1.png", armorPalettes[s.id])
+            recolorTexture("src/main/texture_templates/diamond_humanoid_leggings.png", "assets/emberandfrost/textures/entity/equipment/humanoid_leggings/${s.id}_layer_1.png", armorPalettes[s.id])
             def projectileTypes = [fire:[ingredient:'minecraft:gunpowder', ru:'Огненный снаряд', en:'Fire Projectile'], slow:[ingredient:'minecraft:snowball', ru:'Ледяной снаряд', en:'Frost Projectile'], knockback:[ingredient:'minecraft:feather', ru:'Отбрасывающий снаряд', en:'Knockback Projectile'], poison:[ingredient:'minecraft:spider_eye', ru:'Ядовитый снаряд', en:'Poison Projectile']]
             projectileTypes.each { type, data ->
                 def id = "${s.id}_${type}_projectile"
@@ -519,16 +568,23 @@ tasks.register('generateEmberFrostResources') {
         }
         richTexture('assets/emberandfrost/textures/block/ash_block.png','ash',[0xFF777777,0xFF555555,0xFF383838])
         richTexture('assets/emberandfrost/textures/block/cinder_block.png','ash',[0xFF9BA6B5,0xFF59636F,0xFF2C333C])
-        richTexture('assets/emberandfrost/textures/item/charolite_shard.png','shard',[0xFFE9A8FF,0xFF9C42D6,0xFF40145F])
+        recolorTexture('src/main/texture_templates/amethyst_shard.png','assets/emberandfrost/textures/item/charolite_shard.png',[0xFF40145F,0xFF9C42D6,0xFFE9A8FF])
         richPalettes.each { material, colors ->
             def oreName=material=='charolite'?'charolite_ore':"${material}_ore"
             richTexture("assets/emberandfrost/textures/block/${oreName}.png",'ore',colors)
             writeJson("assets/emberandfrost/models/block/${oreName}.json",[parent:'minecraft:block/cube_all',textures:[all:"emberandfrost:block/${oreName}"]])
             if(material!='charolite'){
-                richTexture("assets/emberandfrost/textures/item/${material}_ingot.png",'ingot',colors)
-                richTexture("assets/emberandfrost/textures/item/raw_${material}.png",'raw',colors)
-                ['helmet','chestplate','leggings','boots','sword','pickaxe','axe','shovel','hoe'].each { part ->
-                    richTexture("assets/emberandfrost/textures/item/${material}_${part}.png",part,colors)
+                recolorTexture('src/main/texture_templates/iron_ingot.png', "assets/emberandfrost/textures/item/${material}_ingot.png", armorPalettes[material])
+                recolorTexture('src/main/texture_templates/raw_iron.png', "assets/emberandfrost/textures/item/raw_${material}.png", armorPalettes[material])
+                def itemTemplates = [
+                    helmet:'diamond_helmet.png', chestplate:'diamond_chestplate.png',
+                    leggings:'diamond_leggings.png', boots:'diamond_boots.png',
+                    sword:'diamond_sword.png', pickaxe:'diamond_pickaxe.png',
+                    axe:'diamond_axe.png', shovel:'diamond_shovel.png', hoe:'diamond_hoe.png'
+                ]
+                itemTemplates.each { part, sourceName ->
+                    boolean preserveWood = part in ['sword','pickaxe','axe','shovel','hoe']
+                    recolorTexture("src/main/texture_templates/${sourceName}", "assets/emberandfrost/textures/item/${material}_${part}.png", armorPalettes[material], preserveWood)
                 }
             }
         }
