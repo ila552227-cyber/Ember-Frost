@@ -381,6 +381,20 @@ tasks.register('generateEmberFrostResources') {
         writeJson('data/emberandfrost/loot_table/blocks/ash_block.json', [
             type:'minecraft:block', pools:[[rolls:1, entries:[[type:'minecraft:item', name:'emberandfrost:ash_block']]]]
         ]);
+        writeJson('assets/emberandfrost/blockstates/cinder_block.json', [variants:['':[model:'emberandfrost:block/cinder_block']]]);
+        writeJson('assets/emberandfrost/models/block/cinder_block.json', [parent:'minecraft:block/cube_all', textures:[all:'emberandfrost:block/cinder_block']]);
+        writeJson('assets/emberandfrost/models/item/cinder_block.json', [parent:'minecraft:block/cube_all', textures:[all:'emberandfrost:block/cinder_block']]);
+        writeJson('assets/emberandfrost/items/cinder_block.json', [model:[type:'minecraft:model', model:'emberandfrost:block/cinder_block']]);
+        writeJson('data/emberandfrost/loot_table/blocks/cinder_block.json', [type:'minecraft:block', pools:[[rolls:1, entries:[[type:'minecraft:item', name:'emberandfrost:cinder_block']]]]]);
+        ru['block.emberandfrost.cinder_block'] = 'Блок Углеруна';
+        en['block.emberandfrost.cinder_block'] = 'Cinder Block';
+        writeJson('data/emberandfrost/recipe/cinder_block.json', [type:'minecraft:crafting_shaped', pattern:['AAA','AAA','AAA'], key:[A:'emberandfrost:cinder_ingot'], result:[id:'emberandfrost:cinder_block']]);
+        writeJson('data/emberandfrost/recipe/cinder_ingots_from_block.json', [type:'minecraft:crafting_shapeless', ingredients:[[item:'emberandfrost:cinder_block']], result:[id:'emberandfrost:cinder_ingot', count:9]]);
+        writeJson('data/emberandfrost/recipe/charolite_enchanting_table.json', [
+            type:'minecraft:crafting_shaped', category:'misc', pattern:['ABA','CDC','EEE'],
+            key:[A:'emberandfrost:charolite_shard', B:'minecraft:book', C:'emberandfrost:cinder_block', D:'minecraft:enchanting_table', E:'minecraft:obsidian'],
+            result:[id:'minecraft:enchanting_table']
+        ]);
 
         // Large hollow Cryolite caverns in the Overworld. The vanilla geode feature
         // creates sealed, irregular cavities with crystal growths on their inner walls.
@@ -466,6 +480,13 @@ tasks.register('generateEmberFrostResources') {
                 for(int x=4;x<=11;x++)put(x,9,lo)
                 if(kind=='raw')for(int i=0;i<14;i++){int x=3+noise(i,41)%10,y=5+noise(i,47)%6;put(x,y,i%3==0?hi:mid)}
                 else {put(6,8,hi);put(7,8,hi);put(8,8,hi);put(9,8,mid)}
+            } else if(kind=='shard') {
+                for(int y=2;y<=13;y++) {
+                    int half=(y<8)?(y-1):(14-y);
+                    for(int x=7-half;x<=8+half;x++) put(x,y,(x==7-half||x==8+half||y==2||y==13)?lo:mid)
+                }
+                for(int y=4;y<=10;y++) put(7,y,hi)
+                put(8,5,hi); put(8,6,hi); put(6,9,hi); put(8,11,lo)
             } else {
                 // Distinct metallic silhouette for each armor piece or tool.
                 for(int y=2;y<15;y++)for(int x=2;x<14;x++){
@@ -494,6 +515,8 @@ tasks.register('generateEmberFrostResources') {
             javax.imageio.ImageIO.write(img,'png',target)
         }
         richTexture('assets/emberandfrost/textures/block/ash_block.png','ash',[0xFF777777,0xFF555555,0xFF383838])
+        richTexture('assets/emberandfrost/textures/block/cinder_block.png','ash',[0xFF9BA6B5,0xFF59636F,0xFF2C333C])
+        richTexture('assets/emberandfrost/textures/item/charolite_shard.png','shard',[0xFFE9A8FF,0xFF9C42D6,0xFF40145F])
         richPalettes.each { material, colors ->
             def oreName=material=='charolite'?'charolite_ore':"${material}_ore"
             richTexture("assets/emberandfrost/textures/block/${oreName}.png",'ore',colors)

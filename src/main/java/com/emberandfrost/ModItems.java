@@ -41,10 +41,10 @@ public final class ModItems {
         }), enchant, SoundEvents.ARMOR_EQUIP_IRON, toughness, 0.0F, repairTag("repairs_armor"), armorAsset(asset));
     }
 
-    private static final ArmorMaterial CINDER_ARMOR = armor(28, 3, 7, 5, 2, 15, 1.0F, "cinder");
-    private static final ArmorMaterial CRYOLITE_ARMOR = armor(34, 3, 8, 6, 3, 18, 2.0F, "cryolite");
+    private static final ArmorMaterial CINDER_ARMOR = armor(28, 2, 6, 5, 2, 15, 0.5F, "cinder");
+    private static final ArmorMaterial CRYOLITE_ARMOR = armor(34, 3, 7, 5, 2, 18, 1.5F, "cryolite");
     private static final ArmorMaterial ASHEN_ARMOR = armor(36, 3, 8, 6, 3, 18, 2.5F, "ashen");
-    private static final ArmorMaterial MAGMA_ARMOR = armor(40, 3, 9, 6, 3, 20, 3.0F, "magma");
+    private static final ArmorMaterial MAGMA_ARMOR = armor(40, 4, 9, 7, 4, 20, 3.5F, "magma");
 
     private static ToolMaterial tool(int durability, float speed, float attack, TagKey<net.minecraft.world.level.block.Block> incorrect, String repair) {
         return new ToolMaterial(incorrect, durability, speed, attack, 18, repairTag(repair));
@@ -72,6 +72,7 @@ public final class ModItems {
 
     static {
         ITEMS.registerSimpleBlockItem("cinder_ore", ModBlocks.CINDER_ORE);
+        ITEMS.registerSimpleBlockItem("cinder_block", ModBlocks.CINDER_BLOCK);
         ITEMS.registerSimpleBlockItem("cryolite_ore", ModBlocks.CRYOLITE_ORE);
         ITEMS.registerSimpleBlockItem("ashen_ore", ModBlocks.ASHEN_ORE);
         ITEMS.registerSimpleBlockItem("ash_block", ModBlocks.ASH_BLOCK);
