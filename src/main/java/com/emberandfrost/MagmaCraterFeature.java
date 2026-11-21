@@ -17,7 +17,6 @@ public final class MagmaCraterFeature extends Feature<NoneFeatureConfiguration> 
     private static final BlockState BLACKSTONE = Blocks.BLACKSTONE.defaultBlockState();
     private static final BlockState MAGMA = Blocks.MAGMA_BLOCK.defaultBlockState();
     private static final BlockState LAVA = Blocks.LAVA.defaultBlockState();
-    private static final BlockState MAGMA_ORE = ModBlocks.MAGMA_ORE.get().defaultBlockState();
 
     public MagmaCraterFeature(Codec<NoneFeatureConfiguration> codec) {
         super(codec);
@@ -38,6 +37,7 @@ public final class MagmaCraterFeature extends Feature<NoneFeatureConfiguration> 
 
         boolean changed = false;
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        BlockState magmaOre = ModBlocks.MAGMA_ORE.get().defaultBlockState();
 
         for (int dx = -radius - 3; dx <= radius + 3; dx++) {
             for (int dz = -radius - 3; dz <= radius + 3; dz++) {
@@ -66,7 +66,7 @@ public final class MagmaCraterFeature extends Feature<NoneFeatureConfiguration> 
                     if (distance < 3.0) {
                         level.setBlock(pos, LAVA, 2);
                     } else if (random.nextFloat() < 0.38F) {
-                        level.setBlock(pos, MAGMA_ORE, 2);
+                        level.setBlock(pos, magmaOre, 2);
                     } else {
                         level.setBlock(pos, MAGMA, 2);
                     }
