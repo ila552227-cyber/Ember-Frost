@@ -453,25 +453,32 @@ tasks.register('generateEmberFrostResources') {
             type:'minecraft:geode',
             config:[
                 blocks:[
-                    filling:'minecraft:air',
-                    inner_layer:'minecraft:air',
-                    alternate_inner_layer:'minecraft:air',
-                    middle_layer:'emberandfrost:cryolite_geode_block',
-                    outer_layer:'minecraft:packed_ice',
+                    alternate_inner_layer_provider:[type:'minecraft:simple_state_provider', state:[Name:'emberandfrost:cryolite_geode_block']],
+                    cannot_replace:'#minecraft:features_cannot_replace',
+                    filling_provider:[type:'minecraft:simple_state_provider', state:[Name:'minecraft:air']],
+                    inner_layer_provider:[type:'minecraft:simple_state_provider', state:[Name:'emberandfrost:cryolite_geode_block']],
                     inner_placements:[
-                        [probability:0.22, state:[Name:'emberandfrost:cryolite_cluster', Properties:[facing:'north',waterlogged:'false']]] ,
-                        [probability:0.12, state:[Name:'emberandfrost:cryolite_bud_large', Properties:[facing:'north',waterlogged:'false']]],
-                        [probability:0.08, state:[Name:'emberandfrost:cryolite_bud_medium', Properties:[facing:'north',waterlogged:'false']]]
-                    ]
+                        [Name:'emberandfrost:cryolite_bud_small', Properties:[facing:'up',waterlogged:'false']],
+                        [Name:'emberandfrost:cryolite_bud_medium', Properties:[facing:'up',waterlogged:'false']],
+                        [Name:'emberandfrost:cryolite_bud_large', Properties:[facing:'up',waterlogged:'false']],
+                        [Name:'emberandfrost:cryolite_cluster', Properties:[facing:'up',waterlogged:'false']]
+                    ],
+                    invalid_blocks:'#minecraft:geode_invalid_blocks',
+                    middle_layer_provider:[type:'minecraft:simple_state_provider', state:[Name:'minecraft:packed_ice']],
+                    outer_layer_provider:[type:'minecraft:simple_state_provider', state:[Name:'minecraft:blue_ice']]
                 ],
-                crack:[ generate_crack_chance:0.95, base_crack_size:2.0, crack_point_offset:2 ],
-                use_potential_placements:true,
-                use_alternate_layer0_chance:0.0,
+                crack:[base_crack_size:2.0, crack_point_offset:2, generate_crack_chance:0.95],
+                distribution_points:[type:'minecraft:uniform', min_inclusive:4, max_inclusive:7],
+                invalid_blocks_threshold:1,
+                layers:[filling:1.7, inner_layer:2.2, middle_layer:3.2, outer_layer:4.2],
+                max_gen_offset:16,
+                min_gen_offset:-16,
+                noise_multiplier:0.05,
+                outer_wall_distance:[type:'minecraft:uniform', min_inclusive:5, max_inclusive:8],
                 placements_require_layer0_alternate:false,
-                outer_wall_distance:[min_inclusive:5,max_inclusive:8],
-                distribution_points:[min_inclusive:4,max_inclusive:7],
-                point_offset:2,
-                invalid_blocks:'#minecraft:geode_invalid_blocks'
+                point_offset:[type:'minecraft:uniform', min_inclusive:1, max_inclusive:2],
+                use_alternate_layer0_chance:0.0,
+                use_potential_placements_chance:1.0
             ]
         ]);
         writeJson('data/emberandfrost/worldgen/placed_feature/cryolite_cavern.json', [
