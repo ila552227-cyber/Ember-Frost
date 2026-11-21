@@ -24,6 +24,25 @@ jobs:
           gradle-version: '9.2.1'
       - name: Build mod
         run: gradle build --no-daemon
+      - name: Smoke test dedicated server startup and world creation
+        shell: bash
+        run: |
+          mkdir -p run/server
+          printf 'eula=true\n' > run/server/eula.txt
+          set +e
+          timeout 240s gradle runServer --no-daemon 2>&1 | tee server-smoke.log
+          status=${PIPESTATUS[0]}
+          set -e
+          if grep -Eiq 'Failed to load registries|Errors in currently selected datapacks|Registry Loading Errors' server-smoke.log; then
+            echo "Fatal registry or datapack loading error"
+            exit 1
+          fi
+          if grep -q 'Done (' server-smoke.log; then
+            echo "Dedicated server reached Done and generated its spawn area"
+            exit 0
+          fi
+          echo "Server did not finish startup (exit code ${status})"
+          exit 1
       - name: Read mod version
         run: echo "MOD_VERSION=$(grep '^mod_version=' gradle.properties | cut -d= -f2)" >> "$GITHUB_ENV"
       - name: Upload mod jar
