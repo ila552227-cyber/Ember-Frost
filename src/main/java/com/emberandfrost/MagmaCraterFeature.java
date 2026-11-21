@@ -37,7 +37,7 @@ public final class MagmaCraterFeature extends Feature<NoneFeatureConfiguration> 
 
         boolean changed = false;
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-        BlockState magmaOre = ModBlocks.magmaOre.get().defaultBlockState();
+        BlockState magmaOre = ModBlocks.MAGMA_ORE.get().defaultBlockState();
 
         for (int dx = -radius - 3; dx <= radius + 3; dx++) {
             for (int dz = -radius - 3; dz <= radius + 3; dz++) {
@@ -87,7 +87,6 @@ public final class MagmaCraterFeature extends Feature<NoneFeatureConfiguration> 
             }
         }
 
-        // A few glowing magma patches make the crater readable from the surface.
         for (int i = 0; i < 12; i++) {
             int dx = random.nextInt(radius * 2 + 1) - radius;
             int dz = random.nextInt(radius * 2 + 1) - radius;
