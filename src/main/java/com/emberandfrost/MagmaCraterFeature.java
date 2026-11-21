@@ -29,7 +29,7 @@ public final class MagmaCraterFeature extends Feature<NoneFeatureConfiguration> 
         BlockPos origin = context.origin();
         int centerX = origin.getX();
         int centerZ = origin.getZ();
-        int radius = 9 + random.nextInt(6);
+        int radius = 16 + random.nextInt(10);
         int seaLevel = level.getSeaLevel();
         int centerSurface = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, centerX, centerZ);
 
@@ -63,7 +63,7 @@ public final class MagmaCraterFeature extends Feature<NoneFeatureConfiguration> 
                     }
 
                     pos.set(x, floorY, z);
-                    if (distance < 3.0) {
+                    if (distance < 5.0) {
                         level.setBlock(pos, LAVA, 2);
                     } else if (random.nextFloat() < 0.38F) {
                         level.setBlock(pos, magmaOre, 2);

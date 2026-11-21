@@ -17,6 +17,7 @@ public final class ModBlocks {
     public static final DeferredBlock<Block> MAGMA_BLOCK = BLOCKS.registerSimpleBlock("magma_block", BlockBehaviour.Properties.of().mapColor(MapColor.FIRE).strength(5.0F, 6.0F).sound(SoundType.METAL));
     public static final DeferredBlock<Block> CRYOLITE_ORE = ore("cryolite_ore", MapColor.ICE, 4.0F);
     public static final DeferredBlock<Block> ASHEN_ORE = ore("ashen_ore", MapColor.NETHER, 4.0F);
+    public static final DeferredBlock<Block> DARK_ASH_BLOCK = BLOCKS.registerSimpleBlock("dark_ash_block", BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(1.5F, 3.0F).sound(SoundType.NETHERRACK));
     public static final DeferredBlock<Block> ASH_BLOCK = BLOCKS.registerSimpleBlock("ash_block",
             BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(1.2F, 3.0F).sound(SoundType.NETHERRACK));
     public static final DeferredBlock<Block> MAGMA_ORE = ore("magma_ore", MapColor.FIRE, 5.0F);

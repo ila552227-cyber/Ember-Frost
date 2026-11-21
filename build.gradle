@@ -386,7 +386,7 @@ tasks.register('generateEmberFrostResources') {
         writeJson('data/emberandfrost/worldgen/placed_feature/magma_crater.json', [
             feature:'emberandfrost:magma_crater',
             placement:[
-                [type:'minecraft:rarity_filter', chance:384],
+                [type:'minecraft:rarity_filter', chance:512],
                 [type:'minecraft:in_square'],
                 [type:'minecraft:heightmap', heightmap:'WORLD_SURFACE_WG'],
                 [type:'minecraft:biome']
@@ -434,6 +434,14 @@ tasks.register('generateEmberFrostResources') {
             ],
             temperature:2.0
         ]);
+        writeJson('assets/emberandfrost/blockstates/dark_ash_block.json', [variants:['':[model:'emberandfrost:block/dark_ash_block']]]);
+        writeJson('assets/emberandfrost/models/block/dark_ash_block.json', [parent:'minecraft:block/cube_all', textures:[all:'emberandfrost:block/dark_ash_block']]);
+        writeJson('assets/emberandfrost/models/item/dark_ash_block.json', [parent:'minecraft:block/cube_all', textures:[all:'emberandfrost:block/dark_ash_block']]);
+        writeJson('assets/emberandfrost/items/dark_ash_block.json', [model:[type:'minecraft:model', model:'emberandfrost:block/dark_ash_block']]);
+        writeJson('data/emberandfrost/loot_table/blocks/dark_ash_block.json', [type:'minecraft:block', pools:[[rolls:1, entries:[[type:'minecraft:item', name:'emberandfrost:dark_ash_block']]]]]);
+        ru['block.emberandfrost.dark_ash_block'] = 'Тёмный пепел';
+        en['block.emberandfrost.dark_ash_block'] = 'Dark Ash';
+        writeJson('data/emberandfrost/tags/block/dark_ash_replaceables.json', [replace:false, values:['#minecraft:base_stone_nether','emberandfrost:ash_block']]);
         writeJson('assets/emberandfrost/blockstates/ash_block.json', [variants:['':[model:'emberandfrost:block/ash_block']]]);
         writeJson('assets/emberandfrost/models/block/ash_block.json', [parent:'minecraft:block/cube_all', textures:[all:'emberandfrost:block/ash_block']]);
         writeJson('assets/emberandfrost/models/item/ash_block.json', [parent:'minecraft:block/cube_all', textures:[all:'emberandfrost:block/ash_block']]);
@@ -454,6 +462,27 @@ tasks.register('generateEmberFrostResources') {
             type:'minecraft:crafting_shaped', category:'misc', pattern:['ABA','CDC','EEE'],
             key:[A:'emberandfrost:charolite_shard', B:'minecraft:book', C:'emberandfrost:cinder_block', D:'minecraft:enchanting_table', E:'minecraft:obsidian'],
             result:[id:'minecraft:enchanting_table']
+        ]);
+
+        // Rare dark-ash patches across the Ashen Wastes surface and exposed Nether stone.
+        writeJson('data/emberandfrost/worldgen/configured_feature/dark_ash_patch.json', [
+            type:'minecraft:ore',
+            config:[size:4, discard_chance_on_air_exposure:0.0, targets:[
+                [target:[predicate_type:'minecraft:tag_match', tag:'emberandfrost:dark_ash_replaceables'], state:[Name:'emberandfrost:dark_ash_block']]
+            ]]
+        ]);
+        writeJson('data/emberandfrost/worldgen/placed_feature/dark_ash_patch.json', [
+            feature:'emberandfrost:dark_ash_patch',
+            placement:[
+                [type:'minecraft:rarity_filter', chance:5],
+                [type:'minecraft:in_square'],
+                [type:'minecraft:heightmap', heightmap:'WORLD_SURFACE_WG'],
+                [type:'minecraft:biome']
+            ]
+        ]);
+        writeJson('data/emberandfrost/neoforge/biome_modifier/dark_ash_patch.json', [
+            type:'neoforge:add_features', biomes:'emberandfrost:ashen_wastes',
+            features:'emberandfrost:dark_ash_patch', step:'underground_ores'
         ]);
 
         // Large hollow Cryolite caverns in the Overworld. The vanilla geode feature
@@ -583,6 +612,7 @@ tasks.register('generateEmberFrostResources') {
             javax.imageio.ImageIO.write(img,'png',target)
         }
         richTexture('assets/emberandfrost/textures/block/ash_block.png','ash',[0xFF777777,0xFF555555,0xFF383838])
+        richTexture('assets/emberandfrost/textures/block/dark_ash_block.png','ash',[0xFF666666,0xFF333333,0xFF161616])
         richTexture('assets/emberandfrost/textures/block/cinder_block.png','ash',[0xFF9BA6B5,0xFF59636F,0xFF2C333C])
         recolorTexture('src/main/texture_templates/amethyst_shard.png','assets/emberandfrost/textures/item/charolite_shard.png',[0xFF40145F,0xFF9C42D6,0xFFE9A8FF])
         richPalettes.each { material, colors ->
