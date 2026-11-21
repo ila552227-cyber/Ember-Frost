@@ -232,7 +232,7 @@ tasks.register('generateEmberFrostResources') {
         sets.each { s ->
             pieces.each { p ->
                 def name = "${s.id}_${p.id}"
-                def key = [A:"emberandfrost:${s.ing}", B:(p.id == 'chestplate' ? "emberandfrost:${s.ore}" : 'minecraft:stick')]
+                def key = [A:"emberandfrost:${s.ing}", B:(p.id == 'chestplate' ? "emberandfrost:${s.id}_block" : 'minecraft:stick')]
                 writeJson("data/emberandfrost/recipe/${name}.json", [type:'minecraft:crafting_shaped', pattern:p.pattern, key:key, result:[id:"emberandfrost:${name}"]])
                 writeJson("assets/emberandfrost/models/item/${name}.json", [parent:(p.handheld ? 'minecraft:item/handheld' : 'minecraft:item/generated'), textures:[layer0:"emberandfrost:item/${name}"]])
                 writeJson("assets/emberandfrost/items/${name}.json", [model:[type:'minecraft:model', model:"emberandfrost:item/${name}"]])
@@ -257,6 +257,15 @@ tasks.register('generateEmberFrostResources') {
             }
             writeJson("data/emberandfrost/tags/item/repairs_${s.id}.json", [replace:false, values:["emberandfrost:${s.ing}"]])
             writeJson("data/emberandfrost/loot_table/blocks/${s.ore}.json", oreLoot(s.ore, "raw_${s.id}"))
+            writeJson("assets/emberandfrost/blockstates/${s.id}_block.json", [variants:['':[model:"emberandfrost:block/${s.id}_block"]]])
+            writeJson("assets/emberandfrost/models/block/${s.id}_block.json", [parent:'minecraft:block/cube_all', textures:[all:"emberandfrost:block/${s.id}_block"]])
+            writeJson("assets/emberandfrost/models/item/${s.id}_block.json", [parent:'minecraft:block/cube_all', textures:[all:"emberandfrost:block/${s.id}_block"]])
+            writeJson("assets/emberandfrost/items/${s.id}_block.json", [model:[type:'minecraft:model', model:"emberandfrost:block/${s.id}_block"]])
+            writeJson("data/emberandfrost/loot_table/blocks/${s.id}_block.json", [type:'minecraft:block', pools:[[rolls:1, entries:[[type:'minecraft:item', name:"emberandfrost:${s.id}_block"]]]]])
+            writeJson("data/emberandfrost/recipe/${s.id}_block.json", [type:'minecraft:crafting_shaped', pattern:['AAA','AAA','AAA'], key:[A:"emberandfrost:${s.ing}"], result:[id:"emberandfrost:${s.id}_block"]])
+            writeJson("data/emberandfrost/recipe/${s.id}_ingots_from_block.json", [type:'minecraft:crafting_shapeless', ingredients:[[item:"emberandfrost:${s.id}_block"]], result:[id:"emberandfrost:${s.ing}", count:9]])
+            ru["block.emberandfrost.${s.id}_block"] = "Блок ${s.ru}"
+            en["block.emberandfrost.${s.id}_block"] = "${s.id.capitalize()} Block"
             writeJson("assets/emberandfrost/blockstates/${s.ore}.json", [variants:['':[model:"emberandfrost:block/${s.ore}"]]])
             def texture = s.id == 'magma' ? 'netherrack' : (s.id == 'cryolite' ? 'packed_ice' : (s.id == 'ashen' ? 'blackstone' : 'deepslate'))
             writeJson("assets/emberandfrost/models/block/${s.ore}.json", [parent:'minecraft:block/cube_all', textures:[all:"minecraft:block/${texture}"]])
@@ -577,6 +586,7 @@ tasks.register('generateEmberFrostResources') {
         richTexture('assets/emberandfrost/textures/block/cinder_block.png','ash',[0xFF9BA6B5,0xFF59636F,0xFF2C333C])
         recolorTexture('src/main/texture_templates/amethyst_shard.png','assets/emberandfrost/textures/item/charolite_shard.png',[0xFF40145F,0xFF9C42D6,0xFFE9A8FF])
         richPalettes.each { material, colors ->
+            richTexture("assets/emberandfrost/textures/block/${material}_block.png",'ash',colors)
             def oreName=material=='charolite'?'charolite_ore':"${material}_ore"
             richTexture("assets/emberandfrost/textures/block/${oreName}.png",'ore',colors)
             writeJson("assets/emberandfrost/models/block/${oreName}.json",[parent:'minecraft:block/cube_all',textures:[all:"emberandfrost:block/${oreName}"]])
