@@ -179,6 +179,47 @@ tasks.register('generateEmberFrostResources') {
             target.parentFile.mkdirs()
             javax.imageio.ImageIO.write(output, 'png', target)
         }
+        def recolorCrystalTexture = { String templatePath, String outputPath, List palette, int targetSize ->
+            def source = javax.imageio.ImageIO.read(file(templatePath))
+            def recolored = new java.awt.image.BufferedImage(source.width, source.height, java.awt.image.BufferedImage.TYPE_INT_ARGB)
+            def colors = palette.collect { color ->
+                int c = color as int
+                [((c >>> 16) & 255), ((c >>> 8) & 255), (c & 255)]
+            }
+            for (int y = 0; y < source.height; y++) {
+                for (int x = 0; x < source.width; x++) {
+                    int pixel = source.getRGB(x, y)
+                    int alpha = (pixel >>> 24) & 255
+                    if (alpha == 0) continue
+                    int red = (pixel >>> 16) & 255
+                    int green = (pixel >>> 8) & 255
+                    int blue = pixel & 255
+                    double luminance = (0.2126 * red + 0.7152 * green + 0.0722 * blue) / 255.0
+                    double position = luminance * (colors.size() - 1)
+                    int index = Math.min((int)Math.floor(position), colors.size() - 2)
+                    double blend = position - index
+                    def low = colors[index]
+                    def high = colors[index + 1]
+                    int nr = Math.max(0, Math.min(255, Math.round(low[0] * (1.0 - blend) + high[0] * blend) as int))
+                    int ng = Math.max(0, Math.min(255, Math.round(low[1] * (1.0 - blend) + high[1] * blend) as int))
+                    int nb = Math.max(0, Math.min(255, Math.round(low[2] * (1.0 - blend) + high[2] * blend) as int))
+                    recolored.setRGB(x, y, (alpha << 24) | (nr << 16) | (ng << 8) | nb)
+                }
+            }
+            def output = new java.awt.image.BufferedImage(16, 16, java.awt.image.BufferedImage.TYPE_INT_ARGB)
+            int offset = (16 - targetSize) / 2
+            for (int y = 0; y < targetSize; y++) {
+                for (int x = 0; x < targetSize; x++) {
+                    int sx = Math.min(source.width - 1, (int)(x * source.width / (double)targetSize))
+                    int sy = Math.min(source.height - 1, (int)(y * source.height / (double)targetSize))
+                    output.setRGB(offset + x, offset + y, recolored.getRGB(sx, sy))
+                }
+            }
+            def target = new File(root, outputPath)
+            target.parentFile.mkdirs()
+            javax.imageio.ImageIO.write(output, 'png', target)
+        }
+
         def armorPalettes = [
             cinder:[0xFF34404D,0xFF5C6B7B,0xFF9AAABC,0xFFE1EAF2],
             cryolite:[0xFF123B60,0xFF176F9D,0xFF43B7DF,0xFFC7F7FF],
@@ -535,12 +576,24 @@ tasks.register('generateEmberFrostResources') {
         writeJson('assets/emberandfrost/blockstates/cryolite_geode_block.json', [variants:['':[model:'emberandfrost:block/cryolite_geode_block']]]);
         writeJson('assets/emberandfrost/models/block/cryolite_geode_block.json', [parent:'minecraft:block/cube_all', textures:[all:'emberandfrost:block/cryolite_geode_block']]);
         ['cryolite_cluster','cryolite_bud_small','cryolite_bud_medium','cryolite_bud_large'].each { id ->
-            writeJson("assets/emberandfrost/blockstates/${id}.json", [variants:['':[model:"emberandfrost:block/${id}"]]]);
-            writeJson("assets/emberandfrost/models/block/${id}.json", [parent:'minecraft:block/cube', textures:[particle:'emberandfrost:block/cryolite_crystal', cross:'emberandfrost:block/cryolite_crystal']]);
+            def variants = [
+                'facing=down':[model:"emberandfrost:block/${id}",x:180],
+                'facing=east':[model:"emberandfrost:block/${id}",x:90,y:90],
+                'facing=north':[model:"emberandfrost:block/${id}",x:90],
+                'facing=south':[model:"emberandfrost:block/${id}",x:90,y:180],
+                'facing=up':[model:"emberandfrost:block/${id}"],
+                'facing=west':[model:"emberandfrost:block/${id}",x:90,y:270]
+            ]
+            writeJson("assets/emberandfrost/blockstates/${id}.json", [variants:variants]);
+            writeJson("assets/emberandfrost/models/block/${id}.json", [parent:'minecraft:block/cross', textures:[cross:"emberandfrost:block/${id}", particle:"emberandfrost:block/${id}"]]);
             writeJson("assets/emberandfrost/models/item/${id}.json", [parent:"emberandfrost:block/${id}"]);
             writeJson("assets/emberandfrost/items/${id}.json", [model:[type:'minecraft:model', model:"emberandfrost:block/${id}"]]);
         }
-        writePixelPng('assets/emberandfrost/textures/block/cryolite_crystal.png','ingot',0x45CFF5);
+        def cryoliteCrystalPalette = [0xFF0C4A72,0xFF35A8D6,0xFFB9F2FF]
+        recolorCrystalTexture('src/main/texture_templates/amethyst_shard.png','assets/emberandfrost/textures/block/cryolite_bud_small.png',cryoliteCrystalPalette,8)
+        recolorCrystalTexture('src/main/texture_templates/amethyst_shard.png','assets/emberandfrost/textures/block/cryolite_bud_medium.png',cryoliteCrystalPalette,10)
+        recolorCrystalTexture('src/main/texture_templates/amethyst_shard.png','assets/emberandfrost/textures/block/cryolite_bud_large.png',cryoliteCrystalPalette,12)
+        recolorCrystalTexture('src/main/texture_templates/amethyst_shard.png','assets/emberandfrost/textures/block/cryolite_cluster.png',cryoliteCrystalPalette,14)
         writeJson('data/emberandfrost/loot_table/blocks/cryolite_cluster.json', oreLoot('cryolite_cluster','raw_cryolite'));
         ['cryolite_bud_small','cryolite_bud_medium','cryolite_bud_large'].each { id ->
             writeJson("data/emberandfrost/loot_table/blocks/${id}.json", oreLoot(id, 'raw_cryolite'));
