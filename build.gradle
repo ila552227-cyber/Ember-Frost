@@ -290,7 +290,7 @@ tasks.register('generateEmberFrostResources') {
         writeJson('data/minecraft/tags/block/incorrect_for_netherite_tool.json', [replace:false, values:['emberandfrost:charolite_ore']])
         writeJson('data/emberandfrost/tags/block/incorrect_for_cinder_tool.json', [replace:false, values:['emberandfrost:ashen_ore','emberandfrost:magma_ore','emberandfrost:charolite_ore']])
         writeJson('data/emberandfrost/tags/block/incorrect_for_cryolite_tool.json', [replace:false, values:['emberandfrost:magma_ore','emberandfrost:charolite_ore']])
-        writeJson('data/emberandfrost/tags/block/incorrect_for_ashen_tool.json', [replace:false, values:['emberandfrost:charolite_ore']])
+        writeJson('data/emberandfrost/tags/block/incorrect_for_ashen_tool.json', [replace:false, values:['emberandfrost:magma_ore','emberandfrost:charolite_ore']])
         ores.each { ore ->
             def target = [target:[predicate_type:'minecraft:tag_match', tag:ore.replace], state:[Name:"emberandfrost:${ore.block}"]]
             writeJson("data/emberandfrost/worldgen/configured_feature/${ore.id}_ore.json", [
