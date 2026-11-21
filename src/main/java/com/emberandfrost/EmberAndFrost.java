@@ -10,5 +10,6 @@ public final class EmberAndFrost {
         ModBlocks.BLOCKS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
         ModCreativeTabs.TABS.register(modEventBus);
+        ModFeatures.FEATURES.register(modEventBus);
     }
 }

@@ -279,7 +279,6 @@ tasks.register('generateEmberFrostResources') {
             [id:'cinder', block:'cinder_ore', min:20, max:60, count:9, size:9, biome:'#minecraft:is_overworld', replace:'minecraft:stone_ore_replaceables'],
             [id:'cryolite', block:'cryolite_ore', min:-10, max:30, count:7, size:7, biome:'#minecraft:is_overworld', replace:'minecraft:stone_ore_replaceables'],
             [id:'ashen', block:'ashen_ore', min:30, max:90, count:8, size:8, biome:'#minecraft:is_nether', replace:'minecraft:base_stone_nether'],
-            [id:'magma', block:'magma_ore', min:10, max:50, count:6, size:6, biome:'#minecraft:is_nether', replace:'minecraft:base_stone_nether'],
             [id:'charolite', block:'charolite_ore', min:-50, max:0, count:3, size:4, biome:'#minecraft:is_overworld', replace:'minecraft:stone_ore_replaceables']
         ]
         writeJson('data/minecraft/tags/block/mineable/pickaxe.json', [replace:false, values:['emberandfrost:cinder_ore','emberandfrost:cryolite_ore','emberandfrost:ashen_ore','emberandfrost:magma_ore','emberandfrost:charolite_ore']])
@@ -309,6 +308,25 @@ tasks.register('generateEmberFrostResources') {
                 type:'neoforge:add_features', biomes:ore.biome, features:"emberandfrost:${ore.id}_ore", step:'underground_ores'
             ])
         }
+
+        // Surface Magma Craters in the Overworld. The registered Java feature carves
+        // a shallow bowl, builds a dark rocky rim, and exposes magma ore in the crater wall.
+        writeJson('data/emberandfrost/worldgen/configured_feature/magma_crater.json', [
+            type:'emberandfrost:magma_crater', config:[:]
+        ]);
+        writeJson('data/emberandfrost/worldgen/placed_feature/magma_crater.json', [
+            feature:'emberandfrost:magma_crater',
+            placement:[
+                [type:'minecraft:rarity_filter', chance:384],
+                [type:'minecraft:in_square'],
+                [type:'minecraft:heightmap', heightmap:'WORLD_SURFACE_WG'],
+                [type:'minecraft:biome']
+            ]
+        ]);
+        writeJson('data/emberandfrost/neoforge/biome_modifier/magma_crater.json', [
+            type:'neoforge:add_features', biomes:'#minecraft:is_overworld',
+            features:'emberandfrost:magma_crater', step:'surface_structures'
+        ]);
 
         // Large hollow Cryolite caverns in the Overworld. The vanilla geode feature
         // creates sealed, irregular cavities with crystal growths on their inner walls.
