@@ -2,9 +2,6 @@ package com.emberandfrost;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.AmethystClusterBlock;
-import net.minecraft.world.level.block.SmallAmethystBudBlock;
-import net.minecraft.world.level.block.MediumAmethystBudBlock;
-import net.minecraft.world.level.block.LargeAmethystBudBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -25,11 +22,11 @@ public final class ModBlocks {
                 .sound(SoundType.AMETHYST_CLUSTER).noOcclusion().lightLevel(state -> 5);
     }
     public static final DeferredBlock<Block> CRYOLITE_BUD_SMALL = BLOCKS.register("cryolite_bud_small",
-            () -> new SmallAmethystBudBlock(3, 4, crystalProperties()));
+            () -> new AmethystClusterBlock(3, 4, crystalProperties()));
     public static final DeferredBlock<Block> CRYOLITE_BUD_MEDIUM = BLOCKS.register("cryolite_bud_medium",
-            () -> new MediumAmethystBudBlock(4, 3, crystalProperties()));
+            () -> new AmethystClusterBlock(4, 3, crystalProperties()));
     public static final DeferredBlock<Block> CRYOLITE_BUD_LARGE = BLOCKS.register("cryolite_bud_large",
-            () -> new LargeAmethystBudBlock(5, 3, crystalProperties()));
+            () -> new AmethystClusterBlock(5, 3, crystalProperties()));
     public static final DeferredBlock<Block> CRYOLITE_CLUSTER = BLOCKS.register("cryolite_cluster",
             () -> new AmethystClusterBlock(7, 3, crystalProperties().lightLevel(state -> 9)));
     public static final DeferredBlock<Block> CRYOLITE_GEODE_BLOCK = BLOCKS.registerSimpleBlock("cryolite_geode_block",
