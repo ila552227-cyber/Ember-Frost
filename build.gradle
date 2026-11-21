@@ -310,6 +310,60 @@ tasks.register('generateEmberFrostResources') {
             ])
         }
 
+        // Large hollow Cryolite caverns in the Overworld. The vanilla geode feature
+        // creates sealed, irregular cavities with crystal growths on their inner walls.
+        writeJson('data/emberandfrost/worldgen/configured_feature/cryolite_cavern.json', [
+            type:'minecraft:geode',
+            config:[
+                blocks:[
+                    filling:'minecraft:air',
+                    inner_layer:'minecraft:air',
+                    alternate_inner_layer:'minecraft:air',
+                    middle_layer:'emberandfrost:cryolite_geode_block',
+                    outer_layer:'minecraft:packed_ice',
+                    inner_placements:[
+                        [probability:0.22, state:[Name:'emberandfrost:cryolite_cluster', Properties:[facing:'north',waterlogged:'false']]] ,
+                        [probability:0.12, state:[Name:'emberandfrost:cryolite_bud_large', Properties:[facing:'north',waterlogged:'false']]],
+                        [probability:0.08, state:[Name:'emberandfrost:cryolite_bud_medium', Properties:[facing:'north',waterlogged:'false']]]
+                    ]
+                ],
+                crack:[ generate_crack_chance:0.95, base_crack_size:2.0, crack_point_offset:2 ],
+                use_potential_placements:true,
+                use_alternate_layer0_chance:0.0,
+                placements_require_layer0_alternate:false,
+                outer_wall_distance:[min_inclusive:5,max_inclusive:8],
+                distribution_points:[min_inclusive:4,max_inclusive:7],
+                point_offset:2,
+                invalid_blocks:'#minecraft:geode_invalid_blocks'
+            ]
+        ]);
+        writeJson('data/emberandfrost/worldgen/placed_feature/cryolite_cavern.json', [
+            feature:'emberandfrost:cryolite_cavern',
+            placement:[
+                [type:'minecraft:rarity_filter', chance:32],
+                [type:'minecraft:in_square'],
+                [type:'minecraft:height_range', height:[type:'minecraft:uniform', min_inclusive:[absolute:-48], max_inclusive:[absolute:18]]],
+                [type:'minecraft:biome']
+            ]
+        ]);
+        writeJson('data/emberandfrost/neoforge/biome_modifier/cryolite_cavern.json', [
+            type:'neoforge:add_features', biomes:'#minecraft:is_overworld',
+            features:'emberandfrost:cryolite_cavern', step:'underground_decoration'
+        ]);
+        writeJson('assets/emberandfrost/blockstates/cryolite_geode_block.json', [variants:['':[model:'emberandfrost:block/cryolite_geode_block']]]);
+        writeJson('assets/emberandfrost/models/block/cryolite_geode_block.json', [parent:'minecraft:block/cube_all', textures:[all:'minecraft:block/blue_ice']]);
+        ['cryolite_cluster','cryolite_bud_small','cryolite_bud_medium','cryolite_bud_large'].each { id ->
+            writeJson("assets/emberandfrost/blockstates/${id}.json", [variants:['':[model:"emberandfrost:block/${id}"]]]);
+            writeJson("assets/emberandfrost/models/block/${id}.json", [parent:'minecraft:block/cube', textures:[particle:'emberandfrost:block/cryolite_crystal', cross:'emberandfrost:block/cryolite_crystal']]);
+            writeJson("assets/emberandfrost/models/item/${id}.json", [parent:"emberandfrost:block/${id}"]);
+            writeJson("assets/emberandfrost/items/${id}.json", [model:[type:'minecraft:model', model:"emberandfrost:block/${id}"]]);
+        }
+        writePixelPng('assets/emberandfrost/textures/block/cryolite_crystal.png','ingot',0x45CFF5);
+        writeJson('data/emberandfrost/loot_table/blocks/cryolite_cluster.json', oreLoot('cryolite_cluster','raw_cryolite'));
+        ['cryolite_bud_small','cryolite_bud_medium','cryolite_bud_large','cryolite_geode_block'].each { id ->
+            writeJson("data/emberandfrost/loot_table/blocks/${id}.json", [type:'minecraft:block',pools:[]]);
+        }
+
         // High-detail custom ore and material textures (overwrite the old placeholder art).
         def richPalettes = [
             cinder:[0xFFD9E0E8,0xFF9AA5B2,0xFF4B535E],
