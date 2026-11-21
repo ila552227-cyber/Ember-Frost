@@ -74,6 +74,7 @@ public final class ModItems {
         ITEMS.registerSimpleBlockItem("cinder_ore", ModBlocks.CINDER_ORE);
         ITEMS.registerSimpleBlockItem("cryolite_ore", ModBlocks.CRYOLITE_ORE);
         ITEMS.registerSimpleBlockItem("ashen_ore", ModBlocks.ASHEN_ORE);
+        ITEMS.registerSimpleBlockItem("ash_block", ModBlocks.ASH_BLOCK);
         ITEMS.registerSimpleBlockItem("magma_ore", ModBlocks.MAGMA_ORE);
         ITEMS.registerSimpleBlockItem("charolite_ore", ModBlocks.CHAROLITE_ORE);
         ITEMS.registerSimpleBlockItem("cryolite_bud_small", ModBlocks.CRYOLITE_BUD_SMALL);

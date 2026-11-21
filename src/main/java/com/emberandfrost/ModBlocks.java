@@ -13,6 +13,8 @@ public final class ModBlocks {
     public static final DeferredBlock<Block> CINDER_ORE = ore("cinder_ore", MapColor.STONE, 3.0F);
     public static final DeferredBlock<Block> CRYOLITE_ORE = ore("cryolite_ore", MapColor.ICE, 4.0F);
     public static final DeferredBlock<Block> ASHEN_ORE = ore("ashen_ore", MapColor.NETHER, 4.0F);
+    public static final DeferredBlock<Block> ASH_BLOCK = BLOCKS.registerSimpleBlock("ash_block",
+            BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(1.2F, 3.0F).sound(SoundType.NETHERRACK));
     public static final DeferredBlock<Block> MAGMA_ORE = ore("magma_ore", MapColor.FIRE, 5.0F);
     public static final DeferredBlock<Block> CHAROLITE_ORE = ore("charolite_ore", MapColor.COLOR_PURPLE, 5.0F);
 

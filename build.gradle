@@ -38,8 +38,13 @@ runs {
 
 sourceSets.main.resources.srcDir('src/generated/resources')
 
+repositories {
+    maven { url = 'https://maven.minecraftforge.net/' }
+}
+
 dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
+    implementation 'com.github.glitchfiend:TerraBlender-neoforge:1.21.11-21.11.0.0'
 }
 
 tasks.withType(ProcessResources).configureEach {
@@ -229,6 +234,8 @@ tasks.register('generateEmberFrostResources') {
         ['cinder_ore','cryolite_ore','ashen_ore','magma_ore','charolite_ore'].each { ore ->
             writeJson("assets/emberandfrost/items/${ore}.json", [model:[type:'minecraft:model', model:"emberandfrost:block/${ore}"]])
         }
+        ru['block.emberandfrost.ash_block'] = 'Блок пепла'
+        en['block.emberandfrost.ash_block'] = 'Ash Block'
         writeJson('assets/emberandfrost/lang/ru_ru.json', ru)
         writeJson('assets/emberandfrost/lang/en_us.json', en)
 
@@ -278,7 +285,7 @@ tasks.register('generateEmberFrostResources') {
         def ores = [
             [id:'cinder', block:'cinder_ore', min:20, max:60, count:9, size:9, biome:'#minecraft:is_overworld', replace:'minecraft:stone_ore_replaceables'],
             [id:'cryolite', block:'cryolite_ore', min:-10, max:30, count:7, size:7, biome:'#minecraft:is_overworld', replace:'minecraft:stone_ore_replaceables'],
-            [id:'ashen', block:'ashen_ore', min:30, max:90, count:8, size:8, biome:'#minecraft:is_nether', replace:'minecraft:base_stone_nether'],
+            [id:'ashen', block:'ashen_ore', min:10, max:20, count:8, size:8, biome:'emberandfrost:ashen_wastes', replace:'minecraft:base_stone_nether'],
             [id:'charolite', block:'charolite_ore', min:-50, max:0, count:3, size:4, biome:'#minecraft:is_overworld', replace:'minecraft:stone_ore_replaceables']
         ]
         writeJson('data/minecraft/tags/block/mineable/pickaxe.json', [replace:false, values:['emberandfrost:cinder_ore','emberandfrost:cryolite_ore','emberandfrost:ashen_ore','emberandfrost:magma_ore','emberandfrost:charolite_ore']])
@@ -326,6 +333,51 @@ tasks.register('generateEmberFrostResources') {
         writeJson('data/emberandfrost/neoforge/biome_modifier/magma_crater.json', [
             type:'neoforge:add_features', biomes:'#minecraft:is_overworld',
             features:'emberandfrost:magma_crater', step:'surface_structures'
+        ]);
+
+        // Ashen Wastes: preserve ordinary Nether features and mob spawns, change the ash terrain.
+        writeJson('data/emberandfrost/worldgen/biome/ashen_wastes.json', [
+            attributes:[
+                'minecraft:audio/ambient_sounds':[
+                    additions:[sound:'minecraft:ambient.nether_wastes.additions', tick_chance:0.0111],
+                    loop:'minecraft:ambient.nether_wastes.loop',
+                    mood:[block_search_extent:8, offset:2.0, sound:'minecraft:ambient.nether_wastes.mood', tick_delay:6000]
+                ],
+                'minecraft:audio/background_music':[default:[max_delay:24000, min_delay:12000, sound:'minecraft:music.nether.nether_wastes']],
+                'minecraft:visual/fog_color':'#555555'
+            ],
+            carvers:'minecraft:nether_cave', downfall:0.0, effects:[water_color:'#3f76e4'],
+            features:[
+                [],[],[],[],[],[],[],
+                ['minecraft:spring_open','minecraft:patch_fire','minecraft:patch_soul_fire','minecraft:glowstone_extra','minecraft:glowstone',
+                 'minecraft:brown_mushroom_nether','minecraft:red_mushroom_nether','minecraft:ore_magma','minecraft:spring_closed',
+                 'minecraft:ore_gravel_nether','minecraft:ore_blackstone','minecraft:ore_gold_nether','minecraft:ore_quartz_nether',
+                 'minecraft:ore_ancient_debris_large','minecraft:ore_debris_small'],
+                [],
+                ['minecraft:spring_lava','minecraft:brown_mushroom_normal','minecraft:red_mushroom_normal']
+            ],
+            has_precipitation:false, spawn_costs:[:],
+            spawners:[
+                ambient:[], axolotls:[],
+                creature:[[type:'minecraft:strider', maxCount:2, minCount:1, weight:60]],
+                misc:[],
+                monster:[
+                    [type:'minecraft:ghast', maxCount:4, minCount:4, weight:50],
+                    [type:'minecraft:zombified_piglin', maxCount:4, minCount:4, weight:100],
+                    [type:'minecraft:magma_cube', maxCount:4, minCount:4, weight:2],
+                    [type:'minecraft:enderman', maxCount:4, minCount:4, weight:1],
+                    [type:'minecraft:piglin', maxCount:4, minCount:4, weight:15]
+                ],
+                underground_water_creature:[], water_ambient:[], water_creature:[]
+            ],
+            temperature:2.0
+        ]);
+        writeJson('assets/emberandfrost/blockstates/ash_block.json', [variants:['':[model:'emberandfrost:block/ash_block']]]);
+        writeJson('assets/emberandfrost/models/block/ash_block.json', [parent:'minecraft:block/cube_all', textures:[all:'emberandfrost:block/ash_block']]);
+        writeJson('assets/emberandfrost/models/item/ash_block.json', [parent:'minecraft:block/cube_all', textures:[all:'emberandfrost:block/ash_block']]);
+        writeJson('assets/emberandfrost/items/ash_block.json', [model:[type:'minecraft:model', model:'emberandfrost:block/ash_block']]);
+        writeJson('data/emberandfrost/loot_table/blocks/ash_block.json', [
+            type:'minecraft:block', pools:[[rolls:1, entries:[[type:'minecraft:item', name:'emberandfrost:ash_block']]]]
         ]);
 
         // Large hollow Cryolite caverns in the Overworld. The vanilla geode feature
@@ -398,7 +450,10 @@ tasks.register('generateEmberFrostResources') {
             def seed = path.hashCode()
             def noise = { int x,int y -> int n=x*374761393+y*668265263+seed; n=(n^(n>>13))*1274126177; (n^(n>>16))&0x7fffffff }
             int hi=palette[0], mid=palette[1], lo=palette[2]
-            if(kind=='ore'){
+            if(kind=='ash'){
+                for(int y=0;y<16;y++) for(int x=0;x<16;x++){ int n=noise(x,y)%100; put(x,y,n<35?lo:(n<82?mid:hi)) }
+                for(int i=0;i<34;i++){ int x=noise(i,71)%16, y=noise(i,83)%16; put(x,y,i%4==0?hi:(i%3==0?lo:mid)) }
+            } else if(kind=='ore'){
                 for(int y=0;y<16;y++) for(int x=0;x<16;x++){int n=noise(x,y)%100;put(x,y,n<48?0xFF303238:(n<82?0xFF494C54:0xFF656A73))}
                 for(int i=0;i<42;i++){int x=noise(i,5)%16,y=noise(i,13)%16;put(x,y,(i%5==0)?hi:mid);if(i%3==0)put(x+1,y,hi);if(i%4==0)put(x,y+1,lo)}
                 for(int i=0;i<8;i++){int x=noise(i,29)%16,y=noise(i,37)%16;put(x,y,hi);put(x+1,y,mid);put(x,y+1,hi)}
@@ -436,6 +491,7 @@ tasks.register('generateEmberFrostResources') {
             }
             javax.imageio.ImageIO.write(img,'png',target)
         }
+        richTexture('assets/emberandfrost/textures/block/ash_block.png','ash',[0xFF777777,0xFF555555,0xFF383838])
         richPalettes.each { material, colors ->
             def oreName=material=='charolite'?'charolite_ore':"${material}_ore"
             richTexture("assets/emberandfrost/textures/block/${oreName}.png",'ore',colors)

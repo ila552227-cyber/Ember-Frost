@@ -37,7 +37,7 @@ public final class MagmaCraterFeature extends Feature<NoneFeatureConfiguration> 
 
         boolean changed = false;
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-        BlockState magmaOre = ModBlocks.MAGMA_ORE.get().defaultBlockState();
+        BlockState magmaOre = ModBlocks.magmaOre.get().defaultBlockState();
 
         for (int dx = -radius - 3; dx <= radius + 3; dx++) {
             for (int dz = -radius - 3; dz <= radius + 3; dz++) {
@@ -74,7 +74,7 @@ public final class MagmaCraterFeature extends Feature<NoneFeatureConfiguration> 
 
                     if (distance > radius - 3.0 && random.nextFloat() < 0.35F) {
                         pos.set(x, floorY + 1, z);
-                        level.setBlock(pos, MAGMA_ORE, 2);
+                        level.setBlock(pos, magmaOre, 2);
                     }
                 } else {
                     int rimHeight = 1 + random.nextInt(3);
@@ -97,7 +97,7 @@ public final class MagmaCraterFeature extends Feature<NoneFeatureConfiguration> 
             int y = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z);
             pos.set(x, y - 1, z);
             if (level.getBlockState(pos).is(Blocks.MAGMA_BLOCK)) {
-                level.setBlock(pos, MAGMA_ORE, 2);
+                level.setBlock(pos, magmaOre, 2);
             }
         }
         return changed;
